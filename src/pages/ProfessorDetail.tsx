@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { StarRating } from "@/components/StarRating";
 import { Card } from "@/components/ui/card";
@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +20,7 @@ interface CourseGrade {
 
 const ProfessorDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { toast } = useToast();
   
   const [overallRating, setOverallRating] = useState(0);
@@ -52,7 +53,24 @@ const ProfessorDetail = () => {
     "Inspiring"
   ];
 
-  const grades = ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D", "F", "Pass", "Fail", "Audit"];
+  const grades = [
+    { letter: "A", percentage: "94-100" },
+    { letter: "A-", percentage: "90-93" },
+    { letter: "B+", percentage: "87-89" },
+    { letter: "B", percentage: "83-86" },
+    { letter: "B-", percentage: "80-82" },
+    { letter: "C+", percentage: "77-79" },
+    { letter: "C", percentage: "73-76" },
+    { letter: "C-", percentage: "70-72" },
+    { letter: "D+", percentage: "67-69" },
+    { letter: "D", percentage: "60-66" },
+    { letter: "F", percentage: "00-59" },
+    { letter: "FX", percentage: "00" },
+    { letter: "N", percentage: "-" },
+    { letter: "Pass", percentage: "-" },
+    { letter: "Fail", percentage: "-" },
+    { letter: "Audit", percentage: "-" }
+  ];
 
   const toggleTag = (tag: string) => {
     setSelectedTags(prev =>
@@ -96,6 +114,15 @@ const ProfessorDetail = () => {
       
       <main className="container py-12">
         <div className="max-w-4xl mx-auto space-y-8">
+          <Button
+            variant="ghost"
+            onClick={() => navigate(-1)}
+            className="gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </Button>
+          
           <Card className="p-8">
             <div className="space-y-6">
               <div>
@@ -167,12 +194,17 @@ const ProfessorDetail = () => {
                         className="flex-1"
                       />
                       <Select value={cg.grade} onValueChange={(value) => updateCourseGrade(index, "grade", value)}>
-                        <SelectTrigger className="w-32">
+                        <SelectTrigger className="w-40">
                           <SelectValue placeholder="Grade" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="max-h-[300px]">
                           {grades.map((grade) => (
-                            <SelectItem key={grade} value={grade}>{grade}</SelectItem>
+                            <SelectItem key={grade.letter} value={grade.letter}>
+                              <div className="flex items-center gap-2">
+                                <span className="font-semibold min-w-[2rem]">{grade.letter}</span>
+                                <span className="text-xs text-muted-foreground">({grade.percentage}%)</span>
+                              </div>
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>

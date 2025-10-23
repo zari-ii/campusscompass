@@ -1,11 +1,13 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { ProfessorCard } from "@/components/ProfessorCard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Plus } from "lucide-react";
+import { Search, Plus, ArrowLeft } from "lucide-react";
 
 const Professors = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
 
   // Mock data - will be replaced with real data later
@@ -54,6 +56,15 @@ const Professors = () => {
       
       <main className="container py-12">
         <div className="max-w-6xl mx-auto space-y-8">
+          <Button
+            variant="ghost"
+            onClick={() => navigate(-1)}
+            className="gap-2 mb-4"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </Button>
+          
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
               <h1 className="text-4xl font-bold mb-2">Professors</h1>
