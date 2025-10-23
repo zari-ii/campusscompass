@@ -5,9 +5,11 @@ import { ProfessorCard } from "@/components/ProfessorCard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Plus, ArrowLeft } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Professors = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
 
   // Mock data - will be replaced with real data later
@@ -62,24 +64,24 @@ const Professors = () => {
             className="gap-2 mb-4"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back
+            {t.back}
           </Button>
           
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
-              <h1 className="text-4xl font-bold mb-2">Professors</h1>
-              <p className="text-muted-foreground">Find and rate your professors</p>
+              <h1 className="text-4xl font-bold mb-2">{t.professors}</h1>
+              <p className="text-muted-foreground">{t.findAndRate}</p>
             </div>
             <Button className="gap-2">
               <Plus className="w-4 h-4" />
-              Add Professor
+              {t.addProfessor}
             </Button>
           </div>
 
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <Input
-              placeholder="Search by name, department, or university..."
+              placeholder={t.searchPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
@@ -94,7 +96,7 @@ const Professors = () => {
 
           {filteredProfessors.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-muted-foreground text-lg">No professors found matching your search</p>
+              <p className="text-muted-foreground text-lg">{t.noResults}</p>
             </div>
           )}
         </div>

@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, Trash2, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface CourseGrade {
   course: string;
@@ -22,6 +23,7 @@ const ProfessorDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useLanguage();
   
   const [overallRating, setOverallRating] = useState(0);
   const [teachingRating, setTeachingRating] = useState(0);
@@ -41,16 +43,16 @@ const ProfessorDetail = () => {
   };
 
   const availableTags = [
-    "Clear explanations",
-    "Fair grading",
-    "Helpful",
-    "Tough grader",
-    "Extra credit",
-    "Engaging lectures",
-    "Available outside class",
-    "Great feedback",
-    "Challenging exams",
-    "Inspiring"
+    t.clearExplanations,
+    t.fairGrading,
+    t.helpful,
+    t.toughGrader,
+    t.extraCredit,
+    t.engagingLectures,
+    t.availableOutsideClass,
+    t.greatFeedback,
+    t.challengingExams,
+    t.inspiring
   ];
 
   const grades = [
@@ -95,16 +97,16 @@ const ProfessorDetail = () => {
   const handleSubmit = () => {
     if (overallRating === 0 || teachingRating === 0) {
       toast({
-        title: "Missing ratings",
-        description: "Please provide both overall and teaching ratings",
+        title: t.missingRatings,
+        description: t.provideRatings,
         variant: "destructive"
       });
       return;
     }
 
     toast({
-      title: "Review submitted!",
-      description: "Thank you for your feedback"
+      title: t.reviewSubmitted,
+      description: t.thankYouFeedback
     });
   };
 
@@ -120,7 +122,7 @@ const ProfessorDetail = () => {
             className="gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back
+            {t.back}
           </Button>
           
           <Card className="p-8">
@@ -140,29 +142,29 @@ const ProfessorDetail = () => {
                   )}>
                     {professor.rating.toFixed(1)}
                   </div>
-                  <div className="text-sm text-muted-foreground">Overall Rating</div>
+                  <div className="text-sm text-muted-foreground">{t.overallRating}</div>
                 </div>
                 <div className="text-center">
                   <div className="mb-2">
                     <StarRating rating={Math.round(professor.teachingScore)} readonly size="lg" />
                   </div>
-                  <div className="text-sm text-muted-foreground">Teaching Style</div>
+                  <div className="text-sm text-muted-foreground">{t.teachingStyle}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold mb-1">{professor.totalReviews}</div>
-                  <div className="text-sm text-muted-foreground">Reviews</div>
+                  <div className="text-sm text-muted-foreground">{t.reviews}</div>
                 </div>
               </div>
             </div>
           </Card>
 
           <Card className="p-8">
-            <h2 className="text-2xl font-bold mb-6">Submit Your Review</h2>
+            <h2 className="text-2xl font-bold mb-6">{t.submitReview}</h2>
             
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label>Overall Rating (1-10)</Label>
+                  <Label>{t.overallRatingLabel}</Label>
                   <div className="flex items-center gap-4">
                     <Input
                       type="number"
@@ -172,30 +174,30 @@ const ProfessorDetail = () => {
                       onChange={(e) => setOverallRating(Math.min(10, Math.max(1, parseInt(e.target.value) || 0)))}
                       className="w-20"
                     />
-                    <span className="text-sm text-muted-foreground">out of 10</span>
+                    <span className="text-sm text-muted-foreground">{t.outOf10}</span>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Teaching Style</Label>
+                  <Label>{t.teachingStyleLabel}</Label>
                   <StarRating rating={teachingRating} onRatingChange={setTeachingRating} size="lg" />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label>Courses & Grades</Label>
+                <Label>{t.coursesAndGrades}</Label>
                 <div className="space-y-3">
                   {courseGrades.map((cg, index) => (
                     <div key={index} className="flex gap-3">
                       <Input
-                        placeholder="Course code (e.g., CS101)"
+                        placeholder={t.coursePlaceholder}
                         value={cg.course}
                         onChange={(e) => updateCourseGrade(index, "course", e.target.value)}
                         className="flex-1"
                       />
                       <Select value={cg.grade} onValueChange={(value) => updateCourseGrade(index, "grade", value)}>
                         <SelectTrigger className="w-40">
-                          <SelectValue placeholder="Grade" />
+                          <SelectValue placeholder={t.grade} />
                         </SelectTrigger>
                         <SelectContent className="max-h-[300px]">
                           {grades.map((grade) => (
@@ -221,15 +223,15 @@ const ProfessorDetail = () => {
                   ))}
                   <Button variant="outline" onClick={addCourseGrade} className="gap-2">
                     <Plus className="w-4 h-4" />
-                    Add Another Course
+                    {t.addAnotherCourse}
                   </Button>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label>Your Feedback</Label>
+                <Label>{t.yourFeedback}</Label>
                 <Textarea
-                  placeholder="Share your experience with this professor..."
+                  placeholder={t.feedbackPlaceholder}
                   value={feedback}
                   onChange={(e) => setFeedback(e.target.value)}
                   rows={6}
@@ -237,7 +239,7 @@ const ProfessorDetail = () => {
               </div>
 
               <div className="space-y-2">
-                <Label>Tags</Label>
+                <Label>{t.tags}</Label>
                 <div className="flex flex-wrap gap-2">
                   {availableTags.map((tag) => (
                     <Badge
@@ -253,7 +255,7 @@ const ProfessorDetail = () => {
               </div>
 
               <Button onClick={handleSubmit} size="lg" className="w-full">
-                Submit Review
+                {t.submitReviewButton}
               </Button>
             </div>
           </Card>

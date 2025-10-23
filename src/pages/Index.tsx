@@ -1,33 +1,36 @@
 import { Header } from "@/components/Header";
 import { CategoryCard } from "@/components/CategoryCard";
 import { GraduationCap, Stethoscope, BookOpen, Users } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Index = () => {
+  const { t } = useLanguage();
+  
   const categories = [
     {
-      title: "Professors",
-      description: "Rate and review university professors and their teaching methods",
+      title: t.professors,
+      description: t.professorsDesc,
       icon: GraduationCap,
       path: "/professors",
       count: 1247
     },
     {
-      title: "Doctors",
-      description: "Share experiences with medical professionals and healthcare providers",
+      title: t.doctors,
+      description: t.doctorsDesc,
       icon: Stethoscope,
       path: "/doctors",
       count: 892
     },
     {
-      title: "School Teachers",
-      description: "Review K-12 educators and their teaching approaches",
+      title: t.schoolTeachers,
+      description: t.schoolTeachersDesc,
       icon: BookOpen,
       path: "/teachers",
       count: 2156
     },
     {
-      title: "Other Professionals",
-      description: "Rate tutors, coaches, trainers, and other service professionals",
+      title: t.otherProfessionals,
+      description: t.otherProfessionalsDesc,
       icon: Users,
       path: "/professionals",
       count: 634
@@ -43,12 +46,12 @@ const Index = () => {
           <div className="text-center space-y-4">
             <div className="inline-block">
               <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                Rate Your Experience
+                {t.homeTitle}
               </h1>
               <div className="h-1 bg-gradient-to-r from-primary to-secondary rounded-full" />
             </div>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Help others make informed decisions by sharing honest reviews about professionals who shaped your learning journey
+              {t.homeSubtitle}
             </p>
           </div>
 

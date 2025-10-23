@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { LucideIcon } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface CategoryCardProps {
   title: string;
@@ -12,6 +13,8 @@ interface CategoryCardProps {
 }
 
 export const CategoryCard = ({ title, description, icon: Icon, path, count }: CategoryCardProps) => {
+  const { t } = useLanguage();
+  
   return (
     <Link to={path}>
       <Card className={cn(
@@ -25,7 +28,7 @@ export const CategoryCard = ({ title, description, icon: Icon, path, count }: Ca
             <div className="rounded-lg bg-gradient-to-br from-primary/10 to-secondary/10 p-3 transition-all group-hover:scale-110">
               <Icon className="w-6 h-6 text-primary" />
             </div>
-            <span className="text-sm font-medium text-muted-foreground">{count} reviews</span>
+            <span className="text-sm font-medium text-muted-foreground">{count} {t.reviews}</span>
           </div>
           <div>
             <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">{title}</h3>
