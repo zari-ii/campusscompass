@@ -62,4 +62,12 @@ export const ru = {
   overall: "Общая",
   department: "Кафедра",
   university: "Университет",
+  hospital: "Больница",
+  specialty: "Специальность",
+  field: "Область",
+  methodsOfHealing: "Методы Лечения",
+  methodsOfHealingLabel: "Методы Лечения",
+  educationalCenter: "Образовательный Центр",
+  coursesAndGradesLabel: "Курсы и Оценки",
+  subjects: "Предметы",
 };

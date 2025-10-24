@@ -25,6 +25,11 @@ const ProfessorDetail = () => {
   const { toast } = useToast();
   const { t } = useLanguage();
   
+  // Detect category from ID prefix
+  const category = id?.startsWith('d') ? 'doctor' : 
+                   id?.startsWith('t') ? 'tutor' : 
+                   id?.startsWith('c') ? 'course' : 'professor';
+  
   const [overallRating, setOverallRating] = useState(0);
   const [teachingRating, setTeachingRating] = useState(0);
   const [feedback, setFeedback] = useState("");
@@ -40,6 +45,33 @@ const ProfessorDetail = () => {
     rating: 8.5,
     teachingScore: 4.5,
     totalReviews: 47
+  };
+
+  const getTeachingLabel = () => {
+    switch (category) {
+      case "doctor": return t.methodsOfHealing;
+      case "tutor": return t.teachingStyle;
+      case "course": return t.teachingStyle;
+      default: return t.teachingStyle;
+    }
+  };
+
+  const getInstitutionLabel = () => {
+    switch (category) {
+      case "doctor": return t.hospital;
+      case "tutor": return t.educationalCenter;
+      case "course": return t.educationalCenter;
+      default: return t.university;
+    }
+  };
+
+  const getCoursesLabel = () => {
+    switch (category) {
+      case "doctor": return t.specialty;
+      case "tutor": return t.subjects;
+      case "course": return t.subjects;
+      default: return t.coursesAndGradesLabel;
+    }
   };
 
   const availableTags = [
@@ -148,7 +180,7 @@ const ProfessorDetail = () => {
                   <div className="mb-2">
                     <StarRating rating={Math.round(professor.teachingScore)} readonly size="lg" />
                   </div>
-                  <div className="text-sm text-muted-foreground">{t.teachingStyle}</div>
+                  <div className="text-sm text-muted-foreground">{getTeachingLabel()}</div>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold mb-1">{professor.totalReviews}</div>
@@ -179,13 +211,13 @@ const ProfessorDetail = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>{t.teachingStyleLabel}</Label>
+                  <Label>{getTeachingLabel()}</Label>
                   <StarRating rating={teachingRating} onRatingChange={setTeachingRating} size="lg" />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label>{t.coursesAndGrades}</Label>
+                <Label>{getCoursesLabel()}</Label>
                 <div className="space-y-3">
                   {courseGrades.map((cg, index) => (
                     <div key={index} className="flex gap-3">

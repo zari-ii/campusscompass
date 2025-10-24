@@ -62,4 +62,12 @@ export const en = {
   overall: "Overall",
   department: "Department",
   university: "University",
+  hospital: "Hospital",
+  specialty: "Specialty",
+  field: "Field",
+  methodsOfHealing: "Methods of Healing",
+  methodsOfHealingLabel: "Methods of Healing",
+  educationalCenter: "Educational Center",
+  coursesAndGradesLabel: "Courses & Grades",
+  subjects: "Subjects",
 };

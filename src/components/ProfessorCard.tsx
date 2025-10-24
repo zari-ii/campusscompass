@@ -13,6 +13,7 @@ interface ProfessorCardProps {
   teachingScore: number;
   courses: string[];
   tags: string[];
+  category?: "professor" | "doctor" | "tutor" | "course";
 }
 
 export const ProfessorCard = ({ 
@@ -23,8 +24,36 @@ export const ProfessorCard = ({
   rating, 
   teachingScore,
   courses,
-  tags 
+  tags,
+  category = "professor"
 }: ProfessorCardProps) => {
+  const getUniversityLabel = () => {
+    switch (category) {
+      case "doctor": return "Hospital";
+      case "tutor": return "Educational Center";
+      case "course": return "Provider";
+      default: return "University";
+    }
+  };
+
+  const getCoursesLabel = () => {
+    switch (category) {
+      case "doctor": return "Specialties";
+      case "tutor": return "Subjects";
+      case "course": return "Modules";
+      default: return "Courses";
+    }
+  };
+
+  const getTeachingLabel = () => {
+    switch (category) {
+      case "doctor": return "Methods";
+      case "tutor": return "Teaching";
+      case "course": return "Quality";
+      default: return "Teaching Style";
+    }
+  };
+
   return (
     <Link to={`/professor/${id}`}>
       <Card className={cn(
@@ -51,7 +80,7 @@ export const ProfessorCard = ({
           
           <div className="space-y-2">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">Teaching Style</span>
+              <span className="text-muted-foreground">{getTeachingLabel()}</span>
               <StarRating rating={Math.round(teachingScore)} readonly size="sm" />
             </div>
           </div>

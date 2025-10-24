@@ -62,4 +62,12 @@ export const az = {
   overall: "Ümumi",
   department: "Kafedra",
   university: "Universitet",
+  hospital: "Xəstəxana",
+  specialty: "İxtisas",
+  field: "Sahə",
+  methodsOfHealing: "Müalicə Metodları",
+  methodsOfHealingLabel: "Müalicə Metodları",
+  educationalCenter: "Təhsil Mərkəzi",
+  coursesAndGradesLabel: "Kurslar və Qiymətlər",
+  subjects: "Fənlər",
 };
