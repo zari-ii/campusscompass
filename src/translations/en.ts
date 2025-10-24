@@ -11,10 +11,10 @@ export const en = {
   professorsDesc: "Rate and review university professors and their teaching methods",
   doctors: "Doctors",
   doctorsDesc: "Share experiences with medical professionals and healthcare providers",
-  schoolTeachers: "School Teachers",
-  schoolTeachersDesc: "Review K-12 educators and their teaching approaches",
-  otherProfessionals: "Other Professionals",
-  otherProfessionalsDesc: "Rate tutors, coaches, trainers, and other service professionals",
+  tutorsCoaches: "Tutors & Coaches",
+  tutorsCoachesDesc: "Rate private tutors, coaches, and trainers",
+  courses: "Courses",
+  coursesDesc: "Review and rate academic courses and programs",
   reviews: "reviews",
   
   // Professors page

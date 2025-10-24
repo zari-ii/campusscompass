@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { ProfessorCard } from "@/components/ProfessorCard";
 import { Input } from "@/components/ui/input";
@@ -9,42 +9,178 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 const Professors = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Mock data - will be replaced with real data later
-  const professors = [
-    {
-      id: "1",
-      name: "Dr. Sarah Johnson",
-      department: "Computer Science",
-      university: "State University",
-      rating: 8.5,
-      teachingScore: 4.5,
-      courses: ["CS101", "CS201", "CS301"],
-      tags: ["Clear explanations", "Fair grading", "Helpful"]
-    },
-    {
-      id: "2",
-      name: "Prof. Michael Chen",
-      department: "Mathematics",
-      university: "Tech Institute",
-      rating: 7.2,
-      teachingScore: 3.5,
-      courses: ["MATH150", "MATH250"],
-      tags: ["Challenging", "Research-focused"]
-    },
-    {
-      id: "3",
-      name: "Dr. Emily Rodriguez",
-      department: "Biology",
-      university: "State University",
-      rating: 9.1,
-      teachingScore: 5,
-      courses: ["BIO101", "BIO201", "BIO301", "BIO401"],
-      tags: ["Passionate", "Engaging lectures", "Extra help"]
+  const getMockData = () => {
+    switch (location.pathname) {
+      case "/doctors":
+        return [
+          {
+            id: "d1",
+            name: "Dr. Rəşad Məmmədov",
+            department: "Kardiyologiya",
+            university: "Azərbaycan Tibb Universiteti",
+            rating: 9.2,
+            teachingScore: 4.8,
+            courses: ["Kardiyologiya", "Daxili xəstəliklər"],
+            tags: ["Peşəkar", "Həssas", "Təcrübəli"]
+          },
+          {
+            id: "d2",
+            name: "Dr. Leyla Əliyeva",
+            department: "Pediatriya",
+            university: "Bakı Dövlət Universiteti",
+            rating: 8.9,
+            teachingScore: 4.9,
+            courses: ["Uşaq xəstəlikləri", "Neonatologiya"],
+            tags: ["Mehriban", "Diqqətli", "Əla mütəxəssis"]
+          },
+          {
+            id: "d3",
+            name: "Dr. Elçin Həsənov",
+            department: "Nevrologiya",
+            university: "Azərbaycan Tibb Universiteti",
+            rating: 8.5,
+            teachingScore: 4.5,
+            courses: ["Nevrologiya", "Neyrocərrahlıq"],
+            tags: ["Dəqiq diaqnoz", "Təcrübəli", "Səbirli"]
+          },
+          {
+            id: "d4",
+            name: "Dr. Günel Quliyeva",
+            department: "Dermotologiya",
+            university: "Dəri və Zöhrəvi Xəstəliklər İnstitutu",
+            rating: 9.0,
+            teachingScore: 4.7,
+            courses: ["Dərmatologiya", "Kosmetologiya"],
+            tags: ["Müasir yanaşma", "Effektiv müalicə", "Peşəkar"]
+          }
+        ];
+      case "/tutors":
+        return [
+          {
+            id: "t1",
+            name: "Aysel Məmmədova",
+            department: "İngilis dili",
+            university: "Şəxsi repetitor",
+            rating: 9.3,
+            teachingScore: 5.0,
+            courses: ["IELTS hazırlıq", "Business English", "Ümumi ingilis"],
+            tags: ["Interaktiv", "Nəticə yönümlü", "Səbirli"]
+          },
+          {
+            id: "t2",
+            name: "Kamran Əhmədov",
+            department: "Riyaziyyat",
+            university: "Şəxsi repetitor",
+            rating: 8.7,
+            teachingScore: 4.6,
+            courses: ["SAT Math", "Abituriyent hazırlığı", "Algebra"],
+            tags: ["Aydın izahat", "Çoxlu məşq", "Keyfiyyətli"]
+          },
+          {
+            id: "t3",
+            name: "Nigar Qəhrəmanova",
+            department: "Fortepiano",
+            university: "Bülbül adına Musiqi Məktəbi",
+            rating: 9.5,
+            teachingScore: 5.0,
+            courses: ["Fortepiano", "Musiqi nəzəriyyəsi"],
+            tags: ["İstedadlı", "İlhamverici", "Peşəkar"]
+          },
+          {
+            id: "t4",
+            name: "Rəşad Hüseynov",
+            department: "Şahmat məşqçisi",
+            university: "Şəxsi məşqçi",
+            rating: 8.8,
+            teachingScore: 4.7,
+            courses: ["Uşaqlar üçün şahmat", "Turnir hazırlığı"],
+            tags: ["Strateji düşüncə", "Səbirli", "Motivasiya edən"]
+          }
+        ];
+      case "/courses":
+        return [
+          {
+            id: "c1",
+            name: "Veb Proqramlaşdırma",
+            department: "React və Node.js",
+            university: "Onlayn Kurs Platforması",
+            rating: 9.1,
+            teachingScore: 4.8,
+            courses: ["Frontend", "Backend", "Full Stack"],
+            tags: ["Praktik", "Layihə əsaslı", "Müasir"]
+          },
+          {
+            id: "c2",
+            name: "Data Science",
+            department: "Python və ML",
+            university: "Tech Academy",
+            rating: 8.6,
+            teachingScore: 4.5,
+            courses: ["Python", "Machine Learning", "AI"],
+            tags: ["Geniş material", "Real layihələr", "Karyera dəstəyi"]
+          },
+          {
+            id: "c3",
+            name: "Digital Marketing",
+            department: "SMM və SEO",
+            university: "Marketing Academy",
+            rating: 8.9,
+            teachingScore: 4.7,
+            courses: ["Social Media", "SEO", "Google Ads"],
+            tags: ["Praktik bilik", "Sənaye ekspertləri", "Sertifikat"]
+          },
+          {
+            id: "c4",
+            name: "Qrafik Dizayn",
+            department: "Adobe Creative Suite",
+            university: "Dizayn Məktəbi",
+            rating: 9.2,
+            teachingScore: 4.9,
+            courses: ["Photoshop", "Illustrator", "UI/UX"],
+            tags: ["Kreativ", "Portfolio hazırlığı", "İlhamverici"]
+          }
+        ];
+      default: // professors
+        return [
+          {
+            id: "1",
+            name: "Dr. Sarah Johnson",
+            department: "Computer Science",
+            university: "State University",
+            rating: 8.5,
+            teachingScore: 4.5,
+            courses: ["CS101", "CS201", "CS301"],
+            tags: ["Clear explanations", "Fair grading", "Helpful"]
+          },
+          {
+            id: "2",
+            name: "Prof. Michael Chen",
+            department: "Mathematics",
+            university: "Tech Institute",
+            rating: 7.2,
+            teachingScore: 3.5,
+            courses: ["MATH150", "MATH250"],
+            tags: ["Challenging", "Research-focused"]
+          },
+          {
+            id: "3",
+            name: "Dr. Emily Rodriguez",
+            department: "Biology",
+            university: "State University",
+            rating: 9.1,
+            teachingScore: 5,
+            courses: ["BIO101", "BIO201", "BIO301", "BIO401"],
+            tags: ["Passionate", "Engaging lectures", "Extra help"]
+          }
+        ];
     }
-  ];
+  };
+
+  const professors = getMockData();
 
   const filteredProfessors = professors.filter(prof =>
     prof.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -69,7 +205,12 @@ const Professors = () => {
           
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
-              <h1 className="text-4xl font-bold mb-2">{t.professors}</h1>
+              <h1 className="text-4xl font-bold mb-2">
+                {location.pathname === "/doctors" && t.doctors}
+                {location.pathname === "/tutors" && t.tutorsCoaches}
+                {location.pathname === "/courses" && t.courses}
+                {location.pathname === "/professors" && t.professors}
+              </h1>
               <p className="text-muted-foreground">{t.findAndRate}</p>
             </div>
             <Button className="gap-2">

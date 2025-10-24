@@ -11,10 +11,10 @@ export const az = {
   professorsDesc: "Universitet müəllimlərini və onların tədris metodlarını qiymətləndirin",
   doctors: "Həkimlər",
   doctorsDesc: "Tibb işçiləri və səhiyyə xidmətləri haqqında təcrübənizi paylaşın",
-  schoolTeachers: "Məktəb Müəllimləri",
-  schoolTeachersDesc: "K-12 pedaqoqlarını və onların tədris üsullarını qiymətləndirin",
-  otherProfessionals: "Digər Mütəxəssislər",
-  otherProfessionalsDesc: "Repetitorları, məşqçiləri və digər xidmət mütəxəssislərini qiymətləndirin",
+  tutorsCoaches: "Repetitorlar və Məşqçilər",
+  tutorsCoachesDesc: "Şəxsi repetitorları, məşqçiləri və təlimçiləri qiymətləndirin",
+  courses: "Kurslar",
+  coursesDesc: "Akademik kursları və proqramları qiymətləndirin və rəy verin",
   reviews: "rəylər",
   
   // Professors page

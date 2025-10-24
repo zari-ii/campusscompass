@@ -1,6 +1,6 @@
 import { Header } from "@/components/Header";
 import { CategoryCard } from "@/components/CategoryCard";
-import { GraduationCap, Stethoscope, BookOpen, Users } from "lucide-react";
+import { GraduationCap, Stethoscope, Users, BookText } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const Index = () => {
@@ -22,18 +22,18 @@ const Index = () => {
       count: 892
     },
     {
-      title: t.schoolTeachers,
-      description: t.schoolTeachersDesc,
-      icon: BookOpen,
-      path: "/teachers",
-      count: 2156
+      title: t.tutorsCoaches,
+      description: t.tutorsCoachesDesc,
+      icon: Users,
+      path: "/tutors",
+      count: 634
     },
     {
-      title: t.otherProfessionals,
-      description: t.otherProfessionalsDesc,
-      icon: Users,
-      path: "/professionals",
-      count: 634
+      title: t.courses,
+      description: t.coursesDesc,
+      icon: BookText,
+      path: "/courses",
+      count: 2156
     }
   ];
 
