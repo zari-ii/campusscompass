@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { GraduationCap } from "lucide-react";
 import { LanguageSelector } from "./LanguageSelector";
+import { ThemeToggle } from "./ThemeToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export const Header = () => {
@@ -17,7 +18,10 @@ export const Header = () => {
             {t.appName}
           </span>
         </Link>
-        <LanguageSelector />
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <LanguageSelector />
+        </div>
       </div>
     </header>
   );
