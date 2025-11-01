@@ -47,40 +47,6 @@ const ProfessorDetail = () => {
     totalReviews: 47
   };
 
-  // Mock reviews data
-  const reviews = [
-    {
-      id: 1,
-      reviewer: "John D.",
-      date: "2024-01-15",
-      overallRating: 9,
-      teachingScore: 5,
-      feedback: "Excellent professor! Very knowledgeable and makes complex topics easy to understand. Always available for questions and provides great feedback on assignments.",
-      tags: ["Clear Explanations", "Helpful", "Engaging Lectures"],
-      courses: [{ course: "CS 101", grade: "A" }, { course: "CS 201", grade: "A-" }]
-    },
-    {
-      id: 2,
-      reviewer: "Sarah M.",
-      date: "2024-01-10",
-      overallRating: 8,
-      teachingScore: 4,
-      feedback: "Great teaching style and fair grading. The exams can be challenging but they're fair if you study the material. Would definitely recommend!",
-      tags: ["Fair Grading", "Available Outside Class", "Challenging Exams"],
-      courses: [{ course: "CS 150", grade: "B+" }]
-    },
-    {
-      id: 3,
-      reviewer: "Michael R.",
-      date: "2024-01-05",
-      overallRating: 7,
-      teachingScore: 4,
-      feedback: "Good professor overall. Lectures are well-organized and the material is interesting. Sometimes moves a bit fast but office hours are helpful.",
-      tags: ["Engaging Lectures", "Great Feedback", "Extra Credit"],
-      courses: [{ course: "CS 101", grade: "B" }]
-    }
-  ];
-
   const getTeachingLabel = () => {
     switch (category) {
       case "doctor": return t.methodsOfHealing;
@@ -221,63 +187,6 @@ const ProfessorDetail = () => {
                   <div className="text-sm text-muted-foreground">{t.reviews}</div>
                 </div>
               </div>
-            </div>
-          </Card>
-
-          <Card className="p-8">
-            <h2 className="text-2xl font-bold mb-6">{t.reviews} ({reviews.length})</h2>
-            
-            <div className="space-y-6">
-              {reviews.map((review) => (
-                <div key={review.id} className="border-b border-border pb-6 last:border-0 last:pb-0">
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <p className="font-semibold">{review.reviewer}</p>
-                      <p className="text-xs text-muted-foreground">{new Date(review.date).toLocaleDateString()}</p>
-                    </div>
-                    <div className="flex gap-4">
-                      <div className="text-center">
-                        <div className={cn(
-                          "text-2xl font-bold",
-                          review.overallRating >= 8 ? "text-success" : 
-                          review.overallRating >= 5 ? "text-warning" : "text-destructive"
-                        )}>
-                          {review.overallRating.toFixed(1)}
-                        </div>
-                        <div className="text-xs text-muted-foreground">{t.overallRating}</div>
-                      </div>
-                      <div className="text-center">
-                        <StarRating rating={review.teachingScore} readonly size="sm" />
-                        <div className="text-xs text-muted-foreground mt-1">{getTeachingLabel()}</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <p className="text-sm mb-4">{review.feedback}</p>
-
-                  <div className="space-y-3">
-                    {review.courses.length > 0 && (
-                      <div className="flex flex-wrap gap-2">
-                        {review.courses.map((cg, i) => (
-                          <Badge key={i} variant="secondary" className="text-xs">
-                            {cg.course}: {cg.grade}
-                          </Badge>
-                        ))}
-                      </div>
-                    )}
-
-                    {review.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-2">
-                        {review.tags.map((tag, i) => (
-                          <Badge key={i} variant="outline" className="text-xs">
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
             </div>
           </Card>
 
