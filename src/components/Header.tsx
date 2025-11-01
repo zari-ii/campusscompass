@@ -14,7 +14,7 @@ export const Header = () => {
           <img 
             src={logo} 
             alt="RateMyPro Logo" 
-            className="w-8 h-8 dark:invert transition-all" 
+            className="w-8 h-8 transition-all" 
           />
           <span className="text-xl font-bold text-foreground">
             {t.appName}
