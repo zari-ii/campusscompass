@@ -1,6 +1,6 @@
 export const ru = {
   // Header
-  appName: "RateMyPro",
+  appName: "Campus Compass",
   
   // Home page
   homeTitle: "Оцените Ваш Опыт",

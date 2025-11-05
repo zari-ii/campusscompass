@@ -1,6 +1,6 @@
 export const az = {
   // Header
-  appName: "RateMyPro",
+  appName: "Campus Compass",
   
   // Home page
   homeTitle: "Təcrübənizi Qiymətləndirin",

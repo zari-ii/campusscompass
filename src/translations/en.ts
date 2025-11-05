@@ -1,6 +1,6 @@
 export const en = {
   // Header
-  appName: "RateMyPro",
+  appName: "Campus Compass",
   
   // Home page
   homeTitle: "Rate Your Experience",
