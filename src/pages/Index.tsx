@@ -1,6 +1,6 @@
 import { Header } from "@/components/Header";
 import { CategoryCard } from "@/components/CategoryCard";
-import { GraduationCap, Stethoscope, Users, BookText } from "lucide-react";
+import { GraduationCap, Brain, Users, BookText } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const Index = () => {
@@ -15,10 +15,10 @@ const Index = () => {
       count: 1247
     },
     {
-      title: t.doctors,
-      description: t.doctorsDesc,
-      icon: Stethoscope,
-      path: "/doctors",
+      title: t.psychologists,
+      description: t.psychologistsDesc,
+      icon: Brain,
+      path: "/psychologists",
       count: 892
     },
     {

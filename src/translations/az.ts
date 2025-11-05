@@ -9,8 +9,8 @@ export const az = {
   // Categories
   professors: "Müəllimlər",
   professorsDesc: "Universitet müəllimlərini və onların tədris metodlarını qiymətləndirin",
-  doctors: "Həkimlər",
-  doctorsDesc: "Tibb işçiləri və səhiyyə xidmətləri haqqında təcrübənizi paylaşın",
+  psychologists: "Psixoloqlar və Psixi Sağlamlıq Məsləhətçiləri",
+  psychologistsDesc: "Dəstəkləyici mühitdə psixi sağlamlıq mütəxəssisləri ilə təcrübənizi paylaşın",
   tutorsCoaches: "Repetitorlar və Məşqçilər",
   tutorsCoachesDesc: "Şəxsi repetitorları, məşqçiləri və təlimçiləri qiymətləndirin",
   courses: "Kurslar",
@@ -40,7 +40,7 @@ export const az = {
   submitReviewButton: "Rəy Göndər",
   back: "Geri",
   
-  // Tags
+  // Professor tags
   clearExplanations: "Aydın izahatlar",
   fairGrading: "Ədalətli qiymətləndirmə",
   helpful: "Kömək edən",
@@ -52,6 +52,18 @@ export const az = {
   challengingExams: "Çətin imtahanlar",
   inspiring: "İlhamverici",
   
+  // Mental health tags
+  activeListener: "Aktiv dinləyici",
+  confidentialTrustworthy: "Məxfi və etibarlı",
+  stressAnxietySupport: "Stress/narahatlıq dəstəyi",
+  friendlyEmpathetic: "Dostcasına və empatik",
+  lgbtqInclusive: "LGBTQ+ inklüziv",
+  crisisSupport: "Böhran dəstəyi təcrübəsi",
+  culturallySensitive: "Mədəni həssaslıq",
+  evidenceBased: "Sübuta əsaslanan yanaşma",
+  flexibleScheduling: "Çevik cədvəl",
+  affordableCare: "Münasib qiymət",
+  
   // Toasts
   missingRatings: "Qiymətlər yoxdur",
   provideRatings: "Zəhmət olmasa həm ümumi, həm də tədris üslubu qiymətini göstərin",
@@ -62,11 +74,20 @@ export const az = {
   overall: "Ümumi",
   department: "Kafedra",
   university: "Universitet",
-  hospital: "Xəstəxana",
+  workplace: "İş yeri",
+  workplaceEnvironment: "İş Mühiti",
+  workplacePlaceholder: "məsələn, Universitet Məsləhət Mərkəzi, Özəl Praktika...",
   specialty: "İxtisas",
   field: "Sahə",
-  methodsOfHealing: "Müalicə Metodları",
-  methodsOfHealingLabel: "Müalicə Metodları",
+  approachStyle: "Yanaşma Tərzi",
+  approachStyleLabel: "Yanaşma Tərzi",
+  likabilityRating: "Bu mütəxəssisi nə qədər bəyəndiniz?",
+  recommendToFriend: "Dostunuza tövsiyə edərdiniz?",
+  comfortLevel: "Seanslar zamanı rahatlıq səviyyəsi",
+  yes: "Bəli",
+  no: "Xeyr",
+  veryUncomfortable: "Çox Narahat",
+  veryComfortable: "Çox Rahat",
   educationalCenter: "Təhsil Mərkəzi",
   coursesAndGradesLabel: "Kurslar və Qiymətlər",
   subjects: "Fənlər",

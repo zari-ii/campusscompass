@@ -9,8 +9,8 @@ export const en = {
   // Categories
   professors: "Professors",
   professorsDesc: "Rate and review university professors and their teaching methods",
-  doctors: "Doctors",
-  doctorsDesc: "Share experiences with medical professionals and healthcare providers",
+  psychologists: "Psychologists & Mental Health Consultants",
+  psychologistsDesc: "Share your experience with mental health professionals in a supportive environment",
   tutorsCoaches: "Tutors & Coaches",
   tutorsCoachesDesc: "Rate private tutors, coaches, and trainers",
   courses: "Courses",
@@ -40,7 +40,7 @@ export const en = {
   submitReviewButton: "Submit Review",
   back: "Back",
   
-  // Tags
+  // Professor tags
   clearExplanations: "Clear explanations",
   fairGrading: "Fair grading",
   helpful: "Helpful",
@@ -52,6 +52,18 @@ export const en = {
   challengingExams: "Challenging exams",
   inspiring: "Inspiring",
   
+  // Mental health tags
+  activeListener: "Active listener",
+  confidentialTrustworthy: "Confidential & trustworthy",
+  stressAnxietySupport: "Stress/anxiety support",
+  friendlyEmpathetic: "Friendly and empathetic",
+  lgbtqInclusive: "LGBTQ+ inclusive",
+  crisisSupport: "Crisis support experience",
+  culturallySensitive: "Cultural sensitivity",
+  evidenceBased: "Evidence-based approach",
+  flexibleScheduling: "Flexible scheduling",
+  affordableCare: "Affordable care",
+  
   // Toasts
   missingRatings: "Missing ratings",
   provideRatings: "Please provide both overall and teaching ratings",
@@ -62,11 +74,20 @@ export const en = {
   overall: "Overall",
   department: "Department",
   university: "University",
-  hospital: "Hospital",
+  workplace: "Workplace",
+  workplaceEnvironment: "Workplace Environment",
+  workplacePlaceholder: "e.g., University Counseling Center, Private Practice...",
   specialty: "Specialty",
   field: "Field",
-  methodsOfHealing: "Methods of Healing",
-  methodsOfHealingLabel: "Methods of Healing",
+  approachStyle: "Approach Style",
+  approachStyleLabel: "Approach Style",
+  likabilityRating: "How much did you like this professional?",
+  recommendToFriend: "Would you recommend to a friend?",
+  comfortLevel: "Comfort level during sessions",
+  yes: "Yes",
+  no: "No",
+  veryUncomfortable: "Very Uncomfortable",
+  veryComfortable: "Very Comfortable",
   educationalCenter: "Educational Center",
   coursesAndGradesLabel: "Courses & Grades",
   subjects: "Subjects",

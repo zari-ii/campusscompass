@@ -15,47 +15,47 @@ const Professors = () => {
 
   const getMockData = () => {
     switch (location.pathname) {
-      case "/doctors":
+      case "/psychologists":
         return [
           {
-            id: "d1",
-            name: "Dr. Rəşad Məmmədov",
-            department: "Kardioloq",
-            university: "Mərkəzi Klinika Xəstəxanası",
-            rating: 9.2,
-            teachingScore: 4.8,
-            courses: ["Ürək-damar xəstəlikləri", "Hipertenziya"],
-            tags: ["Peşəkar", "Həssas", "Təcrübəli"]
+            id: "p1",
+            name: "Dr. Sarah Martinez",
+            department: "Clinical Psychology",
+            university: "University Counseling Center",
+            rating: 9.4,
+            teachingScore: 4.9,
+            courses: ["Anxiety & Depression", "Trauma-Informed Care"],
+            tags: ["Active listener", "LGBTQ+ inclusive", "Culturally sensitive"]
           },
           {
-            id: "d2",
-            name: "Dr. Leyla Əliyeva",
-            department: "Pediatr",
-            university: "Respublika Uşaq Xəstəxanası",
-            rating: 9.5,
-            teachingScore: 5.0,
-            courses: ["Uşaq sağlamlığı", "Vaksinasiya"],
-            tags: ["Mehriban", "Diqqətli", "Əla mütəxəssis"]
-          },
-          {
-            id: "d3",
-            name: "Dr. Elçin Quliyev",
-            department: "Nevroloq",
-            university: "MediClub Xəstəxanası",
-            rating: 8.8,
-            teachingScore: 4.5,
-            courses: ["Baş ağrıları", "Migren müalicəsi"],
-            tags: ["Dəqiq diaqnoz", "Təcrübəli", "Səbirli"]
-          },
-          {
-            id: "d4",
-            name: "Dr. Aynur Həsənova",
-            department: "Dermatoloq",
-            university: "Təbabət Plaza Xəstəxanası",
-            rating: 9.0,
+            id: "p2",
+            name: "Dr. James Thompson",
+            department: "Cognitive Behavioral Therapy",
+            university: "Wellness Clinic",
+            rating: 9.1,
             teachingScore: 4.7,
-            courses: ["Dəri xəstəlikləri", "Kosmetologiya"],
-            tags: ["Müasir yanaşma", "Effektiv müalicə", "Peşəkar"]
+            courses: ["Stress Management", "CBT Techniques"],
+            tags: ["Evidence-based approach", "Friendly and empathetic", "Crisis support experience"]
+          },
+          {
+            id: "p3",
+            name: "Dr. Aisha Patel",
+            department: "Family Therapy",
+            university: "Community Mental Health Center",
+            rating: 9.3,
+            teachingScore: 4.8,
+            courses: ["Relationship Counseling", "Family Dynamics"],
+            tags: ["Confidential & trustworthy", "Culturally sensitive", "Flexible scheduling"]
+          },
+          {
+            id: "p4",
+            name: "Dr. Michael Chen",
+            department: "Child & Adolescent Psychology",
+            university: "University Counseling Center",
+            rating: 9.0,
+            teachingScore: 4.6,
+            courses: ["Teen Mental Health", "Developmental Psychology"],
+            tags: ["Friendly and empathetic", "Stress/anxiety support", "Active listener"]
           }
         ];
       case "/tutors":
@@ -206,7 +206,7 @@ const Professors = () => {
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
               <h1 className="text-4xl font-bold mb-2">
-                {location.pathname === "/doctors" && t.doctors}
+                {location.pathname === "/psychologists" && t.psychologists}
                 {location.pathname === "/tutors" && t.tutorsCoaches}
                 {location.pathname === "/courses" && t.courses}
                 {location.pathname === "/professors" && t.professors}
@@ -235,7 +235,7 @@ const Professors = () => {
                 key={professor.id} 
                 {...professor}
                 category={
-                  location.pathname === "/doctors" ? "doctor" :
+                  location.pathname === "/psychologists" ? "psychologist" :
                   location.pathname === "/tutors" ? "tutor" :
                   location.pathname === "/courses" ? "course" :
                   "professor"

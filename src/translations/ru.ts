@@ -9,8 +9,8 @@ export const ru = {
   // Categories
   professors: "Преподаватели",
   professorsDesc: "Оцените и оставьте отзыв о университетских преподавателях и их методах обучения",
-  doctors: "Врачи",
-  doctorsDesc: "Поделитесь опытом о медицинских работниках и поставщиках медицинских услуг",
+  psychologists: "Психологи и Консультанты по Психическому Здоровью",
+  psychologistsDesc: "Поделитесь опытом о специалистах по психическому здоровью в поддерживающей среде",
   tutorsCoaches: "Репетиторы и Тренеры",
   tutorsCoachesDesc: "Оцените частных репетиторов, тренеров и наставников",
   courses: "Курсы",
@@ -41,6 +41,7 @@ export const ru = {
   back: "Назад",
   
   // Tags
+  // Professor tags
   clearExplanations: "Понятные объяснения",
   fairGrading: "Справедливая оценка",
   helpful: "Помогает",
@@ -52,6 +53,18 @@ export const ru = {
   challengingExams: "Сложные экзамены",
   inspiring: "Вдохновляющий",
   
+  // Mental health tags
+  activeListener: "Активный слушатель",
+  confidentialTrustworthy: "Конфиденциальный и надежный",
+  stressAnxietySupport: "Поддержка при стрессе/тревоге",
+  friendlyEmpathetic: "Дружелюбный и эмпатичный",
+  lgbtqInclusive: "ЛГБТК+ инклюзивный",
+  crisisSupport: "Опыт кризисной поддержки",
+  culturallySensitive: "Культурная чувствительность",
+  evidenceBased: "Подход на основе доказательств",
+  flexibleScheduling: "Гибкое расписание",
+  affordableCare: "Доступная цена",
+  
   // Toasts
   missingRatings: "Отсутствуют оценки",
   provideRatings: "Пожалуйста, укажите общую оценку и оценку стиля преподавания",
@@ -62,11 +75,20 @@ export const ru = {
   overall: "Общая",
   department: "Кафедра",
   university: "Университет",
-  hospital: "Больница",
+  workplace: "Место работы",
+  workplaceEnvironment: "Рабочая Среда",
+  workplacePlaceholder: "например, Университетский консультационный центр, Частная практика...",
   specialty: "Специальность",
   field: "Область",
-  methodsOfHealing: "Методы Лечения",
-  methodsOfHealingLabel: "Методы Лечения",
+  approachStyle: "Стиль Подхода",
+  approachStyleLabel: "Стиль Подхода",
+  likabilityRating: "Насколько вам понравился этот специалист?",
+  recommendToFriend: "Порекомендуете другу?",
+  comfortLevel: "Уровень комфорта во время сеансов",
+  yes: "Да",
+  no: "Нет",
+  veryUncomfortable: "Очень некомфортно",
+  veryComfortable: "Очень комфортно",
   educationalCenter: "Образовательный Центр",
   coursesAndGradesLabel: "Курсы и Оценки",
   subjects: "Предметы",

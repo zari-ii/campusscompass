@@ -13,7 +13,7 @@ interface ProfessorCardProps {
   teachingScore: number;
   courses: string[];
   tags: string[];
-  category?: "professor" | "doctor" | "tutor" | "course";
+  category?: "professor" | "psychologist" | "tutor" | "course";
 }
 
 export const ProfessorCard = ({ 
@@ -29,7 +29,7 @@ export const ProfessorCard = ({
 }: ProfessorCardProps) => {
   const getUniversityLabel = () => {
     switch (category) {
-      case "doctor": return "Hospital";
+      case "psychologist": return "Workplace";
       case "tutor": return "Educational Center";
       case "course": return "Provider";
       default: return "University";
@@ -38,7 +38,7 @@ export const ProfessorCard = ({
 
   const getCoursesLabel = () => {
     switch (category) {
-      case "doctor": return "Specialties";
+      case "psychologist": return "Specialties";
       case "tutor": return "Subjects";
       case "course": return "Modules";
       default: return "Courses";
@@ -47,7 +47,7 @@ export const ProfessorCard = ({
 
   const getTeachingLabel = () => {
     switch (category) {
-      case "doctor": return "Methods";
+      case "psychologist": return "Approach";
       case "tutor": return "Teaching";
       case "course": return "Quality";
       default: return "Teaching Style";

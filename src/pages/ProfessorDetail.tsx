@@ -26,7 +26,7 @@ const ProfessorDetail = () => {
   const { t } = useLanguage();
   
   // Detect category from ID prefix
-  const category = id?.startsWith('d') ? 'doctor' : 
+  const category = id?.startsWith('p') ? 'psychologist' : 
                    id?.startsWith('t') ? 'tutor' : 
                    id?.startsWith('c') ? 'course' : 'professor';
   
@@ -35,6 +35,9 @@ const ProfessorDetail = () => {
   const [feedback, setFeedback] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [courseGrades, setCourseGrades] = useState<CourseGrade[]>([{ course: "", grade: "" }]);
+  const [workplaceEnvironment, setWorkplaceEnvironment] = useState("");
+  const [recommendToFriend, setRecommendToFriend] = useState<string>("");
+  const [comfortLevel, setComfortLevel] = useState(0);
 
   // Mock professor data
   const professor = {
@@ -83,7 +86,7 @@ const ProfessorDetail = () => {
 
   const getTeachingLabel = () => {
     switch (category) {
-      case "doctor": return t.methodsOfHealing;
+      case "psychologist": return t.approachStyle;
       case "tutor": return t.teachingStyle;
       case "course": return t.teachingStyle;
       default: return t.teachingStyle;
@@ -92,7 +95,7 @@ const ProfessorDetail = () => {
 
   const getInstitutionLabel = () => {
     switch (category) {
-      case "doctor": return t.hospital;
+      case "psychologist": return t.workplace;
       case "tutor": return t.educationalCenter;
       case "course": return t.educationalCenter;
       default: return t.university;
@@ -101,14 +104,25 @@ const ProfessorDetail = () => {
 
   const getCoursesLabel = () => {
     switch (category) {
-      case "doctor": return t.specialty;
+      case "psychologist": return t.specialty;
       case "tutor": return t.subjects;
       case "course": return t.subjects;
       default: return t.coursesAndGradesLabel;
     }
   };
 
-  const availableTags = [
+  const availableTags = category === 'psychologist' ? [
+    t.activeListener,
+    t.confidentialTrustworthy,
+    t.stressAnxietySupport,
+    t.friendlyEmpathetic,
+    t.lgbtqInclusive,
+    t.crisisSupport,
+    t.culturallySensitive,
+    t.evidenceBased,
+    t.flexibleScheduling,
+    t.affordableCare
+  ] : [
     t.clearExplanations,
     t.fairGrading,
     t.helpful,
@@ -161,13 +175,24 @@ const ProfessorDetail = () => {
   };
 
   const handleSubmit = () => {
-    if (overallRating === 0 || teachingRating === 0) {
-      toast({
-        title: t.missingRatings,
-        description: t.provideRatings,
-        variant: "destructive"
-      });
-      return;
+    if (category === 'psychologist') {
+      if (overallRating === 0 || teachingRating === 0 || comfortLevel === 0) {
+        toast({
+          title: t.missingRatings,
+          description: "Please provide all required ratings",
+          variant: "destructive"
+        });
+        return;
+      }
+    } else {
+      if (overallRating === 0 || teachingRating === 0) {
+        toast({
+          title: t.missingRatings,
+          description: t.provideRatings,
+          variant: "destructive"
+        });
+        return;
+      }
     }
 
     toast({
@@ -191,7 +216,10 @@ const ProfessorDetail = () => {
             {t.back}
           </Button>
           
-          <Card className="p-8">
+          <Card className={cn(
+            "p-8",
+            category === 'psychologist' && "border-blue-200/50 bg-gradient-to-br from-blue-50/30 to-background dark:from-blue-950/10 dark:border-blue-800/30"
+          )}>
             <div className="space-y-6">
               <div>
                 <h1 className="text-4xl font-bold mb-2">{professor.name}</h1>
@@ -224,7 +252,10 @@ const ProfessorDetail = () => {
             </div>
           </Card>
 
-          <Card className="p-8">
+          <Card className={cn(
+            "p-8",
+            category === 'psychologist' && "border-blue-200/50 bg-gradient-to-br from-blue-50/30 to-background dark:from-blue-950/10 dark:border-blue-800/30"
+          )}>
             <h2 className="text-2xl font-bold mb-6">{t.reviews} ({reviews.length})</h2>
             
             <div className="space-y-6">
@@ -285,75 +316,137 @@ const ProfessorDetail = () => {
             </div>
           </Card>
 
-          <Card className="p-8">
+          <Card className={cn(
+            "p-8",
+            category === 'psychologist' && "border-blue-200/50 bg-gradient-to-br from-blue-50/30 to-background dark:from-blue-950/10 dark:border-blue-800/30"
+          )}>
             <h2 className="text-2xl font-bold mb-6">{t.submitReview}</h2>
             
             <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label>{t.overallRatingLabel}</Label>
-                  <div className="flex items-center gap-4">
+              {category === 'psychologist' ? (
+                <>
+                  <div className="space-y-2">
+                    <Label>{t.workplaceEnvironment}</Label>
                     <Input
-                      type="number"
-                      min="1"
-                      max="10"
-                      value={overallRating || ""}
-                      onChange={(e) => setOverallRating(Math.min(10, Math.max(1, parseInt(e.target.value) || 0)))}
-                      className="w-20"
+                      placeholder={t.workplacePlaceholder}
+                      value={workplaceEnvironment}
+                      onChange={(e) => setWorkplaceEnvironment(e.target.value)}
                     />
-                    <span className="text-sm text-muted-foreground">{t.outOf10}</span>
                   </div>
-                </div>
 
-                <div className="space-y-2">
-                  <Label>{getTeachingLabel()}</Label>
-                  <StarRating rating={teachingRating} onRatingChange={setTeachingRating} size="lg" />
-                </div>
-              </div>
+                  <div className="space-y-2">
+                    <Label>{t.likabilityRating}</Label>
+                    <StarRating rating={overallRating} onRatingChange={setOverallRating} size="lg" />
+                  </div>
 
-              <div className="space-y-2">
-                <Label>{getCoursesLabel()}</Label>
-                <div className="space-y-3">
-                  {courseGrades.map((cg, index) => (
-                    <div key={index} className="flex gap-3">
+                  <div className="space-y-2">
+                    <Label>{t.comfortLevel}</Label>
+                    <div className="flex items-center gap-4">
                       <Input
-                        placeholder={t.coursePlaceholder}
-                        value={cg.course}
-                        onChange={(e) => updateCourseGrade(index, "course", e.target.value)}
-                        className="flex-1"
+                        type="number"
+                        min="1"
+                        max="5"
+                        value={comfortLevel || ""}
+                        onChange={(e) => setComfortLevel(Math.min(5, Math.max(1, parseInt(e.target.value) || 0)))}
+                        className="w-20"
                       />
-                      <Select value={cg.grade} onValueChange={(value) => updateCourseGrade(index, "grade", value)}>
-                        <SelectTrigger className="w-40">
-                          <SelectValue placeholder={t.grade} />
-                        </SelectTrigger>
-                        <SelectContent className="max-h-[300px]">
-                          {grades.map((grade) => (
-                            <SelectItem key={grade.letter} value={grade.letter}>
-                              <div className="flex items-center gap-2">
-                                <span className="font-semibold min-w-[2rem]">{grade.letter}</span>
-                                <span className="text-xs text-muted-foreground">({grade.percentage}%)</span>
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      {courseGrades.length > 1 && (
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={() => removeCourseGrade(index)}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      )}
+                      <div className="flex-1">
+                        <div className="flex justify-between text-xs text-muted-foreground mb-1">
+                          <span>{t.veryUncomfortable}</span>
+                          <span>{t.veryComfortable}</span>
+                        </div>
+                        <StarRating rating={comfortLevel} onRatingChange={setComfortLevel} size="md" />
+                      </div>
                     </div>
-                  ))}
-                  <Button variant="outline" onClick={addCourseGrade} className="gap-2">
-                    <Plus className="w-4 h-4" />
-                    {t.addAnotherCourse}
-                  </Button>
-                </div>
-              </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>{t.recommendToFriend}</Label>
+                    <Select value={recommendToFriend} onValueChange={setRecommendToFriend}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="yes">{t.yes}</SelectItem>
+                        <SelectItem value="no">{t.no}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>{t.approachStyleLabel}</Label>
+                    <StarRating rating={teachingRating} onRatingChange={setTeachingRating} size="lg" />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label>{t.overallRatingLabel}</Label>
+                      <div className="flex items-center gap-4">
+                        <Input
+                          type="number"
+                          min="1"
+                          max="10"
+                          value={overallRating || ""}
+                          onChange={(e) => setOverallRating(Math.min(10, Math.max(1, parseInt(e.target.value) || 0)))}
+                          className="w-20"
+                        />
+                        <span className="text-sm text-muted-foreground">{t.outOf10}</span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>{getTeachingLabel()}</Label>
+                      <StarRating rating={teachingRating} onRatingChange={setTeachingRating} size="lg" />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>{getCoursesLabel()}</Label>
+                    <div className="space-y-3">
+                      {courseGrades.map((cg, index) => (
+                        <div key={index} className="flex gap-3">
+                          <Input
+                            placeholder={t.coursePlaceholder}
+                            value={cg.course}
+                            onChange={(e) => updateCourseGrade(index, "course", e.target.value)}
+                            className="flex-1"
+                          />
+                          <Select value={cg.grade} onValueChange={(value) => updateCourseGrade(index, "grade", value)}>
+                            <SelectTrigger className="w-40">
+                              <SelectValue placeholder={t.grade} />
+                            </SelectTrigger>
+                            <SelectContent className="max-h-[300px]">
+                              {grades.map((grade) => (
+                                <SelectItem key={grade.letter} value={grade.letter}>
+                                  <div className="flex items-center gap-2">
+                                    <span className="font-semibold min-w-[2rem]">{grade.letter}</span>
+                                    <span className="text-xs text-muted-foreground">({grade.percentage}%)</span>
+                                  </div>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          {courseGrades.length > 1 && (
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              onClick={() => removeCourseGrade(index)}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          )}
+                        </div>
+                      ))}
+                      <Button variant="outline" onClick={addCourseGrade} className="gap-2">
+                        <Plus className="w-4 h-4" />
+                        {t.addAnotherCourse}
+                      </Button>
+                    </div>
+                  </div>
+                </>
+              )}
 
               <div className="space-y-2">
                 <Label>{t.yourFeedback}</Label>
