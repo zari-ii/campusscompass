@@ -9,8 +9,8 @@ export const az = {
   // Categories
   professors: "Müəllimlər",
   professorsDesc: "Universitet müəllimlərini və onların tədris metodlarını qiymətləndirin",
-  psychologists: "Psixoloqlar və Psixi Sağlamlıq Məsləhətçiləri",
-  psychologistsDesc: "Dəstəkləyici mühitdə psixi sağlamlıq mütəxəssisləri ilə təcrübənizi paylaşın",
+  psychologists: "Psixi Sağlamlıq Məsləhətçiləri",
+  psychologistsDesc: "Psixi sağlamlıq mütəxəssisləri ilə təcrübənizi dəstəkləyici mühitdə paylaşın",
   tutorsCoaches: "Repetitorlar və Məşqçilər",
   tutorsCoachesDesc: "Şəxsi repetitorları, məşqçiləri və təlimçiləri qiymətləndirin",
   courses: "Kurslar",

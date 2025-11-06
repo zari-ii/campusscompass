@@ -206,15 +206,17 @@ const ProfessorDetail = () => {
       <Header />
       
       <main className="container py-12">
+        {/* Floating Back Button */}
+        <Button 
+          variant="outline" 
+          onClick={() => navigate(-1)} 
+          className="fixed top-20 left-4 z-50 shadow-lg hover:shadow-xl transition-shadow bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          {t.back}
+        </Button>
+
         <div className="max-w-4xl mx-auto space-y-8">
-          <Button
-            variant="ghost"
-            onClick={() => navigate(-1)}
-            className="gap-2"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            {t.back}
-          </Button>
           
           <Card className={cn(
             "p-8",
