@@ -9,7 +9,7 @@ export const en = {
   // Categories
   professors: "Professors",
   professorsDesc: "Rate and review university professors and their teaching methods",
-  psychologists: "Psychologists & Mental Health Consultants",
+  psychologists: "Mental Health Consultants",
   psychologistsDesc: "Share your experience with mental health professionals in a supportive environment",
   tutorsCoaches: "Tutors & Coaches",
   tutorsCoachesDesc: "Rate private tutors, coaches, and trainers",
