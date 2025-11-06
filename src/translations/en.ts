@@ -91,4 +91,22 @@ export const en = {
   educationalCenter: "Educational Center",
   coursesAndGradesLabel: "Courses & Grades",
   subjects: "Subjects",
+  
+  // Auth
+  signIn: "Sign In",
+  signUp: "Sign Up",
+  email: "Email",
+  universityEmail: "University Email",
+  password: "Password",
+  username: "Username (Anonymous)",
+  createAccount: "Create Account",
+  alreadyHaveAccount: "Already have an account?",
+  dontHaveAccount: "Don't have an account?",
+  universityEmailRequired: "Please use your university email (@ada.edu.az, @khazar.org, etc.)",
+  usernameRequired: "Username is required (3-30 characters)",
+  passwordRequired: "Password must be at least 6 characters",
+  signUpSuccess: "Account created! Please check your email.",
+  signInSuccess: "Welcome back!",
+  authError: "Authentication error",
+  invalidCredentials: "Invalid email or password",
 };

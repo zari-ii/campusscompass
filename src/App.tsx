@@ -8,6 +8,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import Index from "./pages/Index";
 import Professors from "./pages/Professors";
 import ProfessorDetail from "./pages/ProfessorDetail";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
           <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/auth" element={<Auth />} />
             <Route path="/professors" element={<Professors />} />
             <Route path="/psychologists" element={<Professors />} />
             <Route path="/tutors" element={<Professors />} />

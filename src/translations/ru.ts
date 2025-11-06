@@ -92,4 +92,22 @@ export const ru = {
   educationalCenter: "Образовательный Центр",
   coursesAndGradesLabel: "Курсы и Оценки",
   subjects: "Предметы",
+  
+  // Auth
+  signIn: "Войти",
+  signUp: "Регистрация",
+  email: "Email",
+  universityEmail: "Университетский Email",
+  password: "Пароль",
+  username: "Имя пользователя (Анонимное)",
+  createAccount: "Создать аккаунт",
+  alreadyHaveAccount: "Уже есть аккаунт?",
+  dontHaveAccount: "Нет аккаунта?",
+  universityEmailRequired: "Используйте университетский email (@ada.edu.az, @khazar.org, и т.д.)",
+  usernameRequired: "Имя пользователя обязательно (3-30 символов)",
+  passwordRequired: "Пароль должен содержать минимум 6 символов",
+  signUpSuccess: "Аккаунт создан! Проверьте ваш email.",
+  signInSuccess: "С возвращением!",
+  authError: "Ошибка аутентификации",
+  invalidCredentials: "Неверный email или пароль",
 };

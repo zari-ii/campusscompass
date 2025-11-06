@@ -91,4 +91,22 @@ export const az = {
   educationalCenter: "Təhsil Mərkəzi",
   coursesAndGradesLabel: "Kurslar və Qiymətlər",
   subjects: "Fənlər",
+  
+  // Auth
+  signIn: "Daxil ol",
+  signUp: "Qeydiyyat",
+  email: "Email",
+  universityEmail: "Universitet Email",
+  password: "Şifrə",
+  username: "İstifadəçi adı (Anonim)",
+  createAccount: "Hesab yarat",
+  alreadyHaveAccount: "Artıq hesabınız var?",
+  dontHaveAccount: "Hesabınız yoxdur?",
+  universityEmailRequired: "Universitet emailindən istifadə edin (@ada.edu.az, @khazar.org, və s.)",
+  usernameRequired: "İstifadəçi adı tələb olunur (3-30 simvol)",
+  passwordRequired: "Şifrə ən azı 6 simvol olmalıdır",
+  signUpSuccess: "Hesab yaradıldı! Emailinizi yoxlayın.",
+  signInSuccess: "Xoş gəlmisiniz!",
+  authError: "Autentifikasiya xətası",
+  invalidCredentials: "Yanlış email və ya şifrə",
 };

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Button } from "./ui/button";
 import { LanguageSelector } from "./LanguageSelector";
 import { ThemeToggle } from "./ThemeToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -17,6 +18,9 @@ export const Header = () => {
           </span>
         </Link>
         <div className="flex items-center gap-2">
+          <Button variant="outline" asChild>
+            <Link to="/auth">{t.signIn}</Link>
+          </Button>
           <ThemeToggle />
           <LanguageSelector />
         </div>
