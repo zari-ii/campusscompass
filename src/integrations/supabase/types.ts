@@ -44,6 +44,44 @@ export type Database = {
         }
         Relationships: []
       }
+      user_badges: {
+        Row: {
+          badge_type: Database["public"]["Enums"]["badge_type"]
+          course_name: string | null
+          created_at: string
+          grade: string | null
+          id: string
+          user_id: string
+          verified_at: string | null
+        }
+        Insert: {
+          badge_type: Database["public"]["Enums"]["badge_type"]
+          course_name?: string | null
+          created_at?: string
+          grade?: string | null
+          id?: string
+          user_id: string
+          verified_at?: string | null
+        }
+        Update: {
+          badge_type?: Database["public"]["Enums"]["badge_type"]
+          course_name?: string | null
+          created_at?: string
+          grade?: string | null
+          id?: string
+          user_id?: string
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -52,7 +90,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      badge_type: "verified_student" | "graduated_course"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -179,6 +217,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      badge_type: ["verified_student", "graduated_course"],
+    },
   },
 } as const

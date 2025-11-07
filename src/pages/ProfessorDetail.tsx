@@ -13,6 +13,7 @@ import { Plus, Trash2, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { UserBadge } from "@/components/UserBadge";
 
 interface CourseGrade {
   course: string;
@@ -60,7 +61,11 @@ const ProfessorDetail = () => {
       teachingScore: 5,
       feedback: "Excellent professor! Very clear explanations and always available to help. The course material was challenging but fair.",
       courses: [{ course: "Data Structures", grade: "A" }],
-      tags: [t.clearExplanations, t.helpful, t.fairGrading]
+      tags: [t.clearExplanations, t.helpful, t.fairGrading],
+      badges: [
+        { type: "verified_student" as const },
+        { type: "graduated_course" as const, courseName: "Data Structures", grade: "A" }
+      ]
     },
     {
       id: 2,
@@ -70,7 +75,10 @@ const ProfessorDetail = () => {
       teachingScore: 4,
       feedback: "Great teaching style and very organized lectures. Exams can be tough but she prepares you well.",
       courses: [{ course: "Algorithms", grade: "B+" }],
-      tags: [t.engagingLectures, t.challengingExams, t.greatFeedback]
+      tags: [t.engagingLectures, t.challengingExams, t.greatFeedback],
+      badges: [
+        { type: "verified_student" as const }
+      ]
     },
     {
       id: 3,
@@ -80,7 +88,8 @@ const ProfessorDetail = () => {
       teachingScore: 4,
       feedback: "Good professor overall. Sometimes moves a bit fast through material, but office hours are very helpful.",
       courses: [{ course: "Computer Science 101", grade: "B" }],
-      tags: [t.availableOutsideClass, t.helpful]
+      tags: [t.availableOutsideClass, t.helpful],
+      badges: []
     }
   ];
 
@@ -265,7 +274,21 @@ const ProfessorDetail = () => {
                 <div key={review.id} className="border-b border-border last:border-0 pb-6 last:pb-0">
                   <div className="flex justify-between items-start mb-3">
                     <div>
-                      <p className="font-semibold">{review.reviewerName}</p>
+                      <div className="flex items-center gap-2 mb-1">
+                        <p className="font-semibold">{review.reviewerName}</p>
+                        {review.badges && review.badges.length > 0 && (
+                          <div className="flex gap-1 flex-wrap">
+                            {review.badges.map((badge, idx) => (
+                              <UserBadge 
+                                key={idx} 
+                                type={badge.type}
+                                courseName={badge.courseName}
+                                grade={badge.grade}
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </div>
                       <p className="text-sm text-muted-foreground">{review.date}</p>
                     </div>
                     <div className="flex gap-4">
