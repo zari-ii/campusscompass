@@ -44,6 +44,57 @@ export type Database = {
         }
         Relationships: []
       }
+      reviews: {
+        Row: {
+          category: string
+          comfort_level: number | null
+          courses: Json | null
+          created_at: string
+          feedback: string
+          id: string
+          overall_rating: number
+          professional_id: string
+          recommend_to_friend: boolean | null
+          tags: string[] | null
+          teaching_rating: number
+          updated_at: string
+          user_id: string
+          workplace_environment: string | null
+        }
+        Insert: {
+          category?: string
+          comfort_level?: number | null
+          courses?: Json | null
+          created_at?: string
+          feedback: string
+          id?: string
+          overall_rating: number
+          professional_id: string
+          recommend_to_friend?: boolean | null
+          tags?: string[] | null
+          teaching_rating: number
+          updated_at?: string
+          user_id: string
+          workplace_environment?: string | null
+        }
+        Update: {
+          category?: string
+          comfort_level?: number | null
+          courses?: Json | null
+          created_at?: string
+          feedback?: string
+          id?: string
+          overall_rating?: number
+          professional_id?: string
+          recommend_to_friend?: boolean | null
+          tags?: string[] | null
+          teaching_rating?: number
+          updated_at?: string
+          user_id?: string
+          workplace_environment?: string | null
+        }
+        Relationships: []
+      }
       user_badges: {
         Row: {
           badge_type: Database["public"]["Enums"]["badge_type"]
