@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Card } from "@/components/ui/card";
@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 
@@ -19,6 +20,14 @@ const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useLanguage();
+  const { user } = useAuth();
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   // University email domains
   const universityDomains = ["@ada.edu.az", "@khazar.org", "@bsu.edu.az", "@atmu.edu.az"];
@@ -90,20 +99,21 @@ const Auth = () => {
         });
 
         if (error) {
+          let errorMessage = error.message;
+          if (error.message.includes("already registered")) {
+            errorMessage = t.userAlreadyExists || "This email is already registered. Please sign in instead.";
+          }
           toast({
             title: t.authError,
-            description: error.message,
+            description: errorMessage,
             variant: "destructive"
           });
         } else {
           toast({
             title: t.signUpSuccess,
-            description: "You can now sign in with your credentials."
+            description: t.signUpSuccessMessage || "Account created successfully!"
           });
-          setIsSignUp(false);
-          setEmail("");
-          setPassword("");
-          setUsername("");
+          // Auto-login is handled by auth state change - redirect will happen automatically
         }
       } else {
         // Sign in
@@ -113,9 +123,15 @@ const Auth = () => {
         });
 
         if (error) {
+          let errorMessage = t.invalidCredentials;
+          if (error.message.includes("Invalid login credentials")) {
+            errorMessage = t.invalidCredentials || "Invalid email or password. Please try again.";
+          } else if (error.message.includes("Email not confirmed")) {
+            errorMessage = t.emailNotConfirmed || "Please confirm your email before signing in.";
+          }
           toast({
             title: t.authError,
-            description: t.invalidCredentials,
+            description: errorMessage,
             variant: "destructive"
           });
         } else {
@@ -147,7 +163,7 @@ const Auth = () => {
               {isSignUp ? t.signUp : t.signIn}
             </h1>
             <p className="text-muted-foreground text-center mb-8">
-              {isSignUp ? "Create your anonymous account" : "Welcome back to Campus Compass"}
+              {isSignUp ? t.createAccount || "Create your anonymous account" : t.welcomeBack || "Welcome back to Campus Compass"}
             </p>
 
             <form onSubmit={handleAuth} className="space-y-6">
@@ -163,7 +179,7 @@ const Auth = () => {
                     required
                   />
                   <p className="text-xs text-muted-foreground">
-                    Your username will be displayed on reviews (stays anonymous)
+                    {t.usernameHint || "Your username will be displayed on reviews (stays anonymous)"}
                   </p>
                 </div>
               )}
@@ -179,7 +195,7 @@ const Auth = () => {
                   required
                 />
                 <p className="text-xs text-muted-foreground">
-                  Accepted: {universityDomains.join(", ")}
+                  {t.acceptedDomains || "Accepted"}: {universityDomains.join(", ")}
                 </p>
               </div>
 
@@ -196,14 +212,19 @@ const Auth = () => {
               </div>
 
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Loading..." : isSignUp ? t.signUp : t.signIn}
+                {loading ? (t.loading || "Loading...") : isSignUp ? t.signUp : t.signIn}
               </Button>
             </form>
 
             <div className="mt-6 text-center">
               <button
                 type="button"
-                onClick={() => setIsSignUp(!isSignUp)}
+                onClick={() => {
+                  setIsSignUp(!isSignUp);
+                  setEmail("");
+                  setPassword("");
+                  setUsername("");
+                }}
                 className="text-sm text-primary hover:underline"
               >
                 {isSignUp ? t.alreadyHaveAccount : t.dontHaveAccount}
