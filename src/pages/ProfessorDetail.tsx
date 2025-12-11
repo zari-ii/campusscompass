@@ -9,11 +9,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Trash2, ArrowLeft } from "lucide-react";
+import { Plus, Trash2, ArrowLeft, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { UserBadge } from "@/components/UserBadge";
+import { useReviews } from "@/hooks/useReviews";
+import { useAuth } from "@/contexts/AuthContext";
+import { formatDistanceToNow } from "date-fns";
 
 interface CourseGrade {
   course: string;
@@ -39,8 +42,12 @@ const ProfessorDetail = () => {
   const [workplaceEnvironment, setWorkplaceEnvironment] = useState("");
   const [recommendToFriend, setRecommendToFriend] = useState<string>("");
   const [comfortLevel, setComfortLevel] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Mock professor data
+  const { user } = useAuth();
+  const { reviews, loading: reviewsLoading, submitReview } = useReviews(id || "");
+
+  // Mock professor data (would be fetched from database in production)
   const professor = {
     id: id || "1",
     name: "Dr. Sarah Johnson",
@@ -48,50 +55,8 @@ const ProfessorDetail = () => {
     university: "State University",
     rating: 8.5,
     teachingScore: 4.5,
-    totalReviews: 47
+    totalReviews: reviews.length
   };
-
-  // Mock reviews data
-  const reviews = [
-    {
-      id: 1,
-      reviewerName: "John D.",
-      date: "2 weeks ago",
-      overallRating: 9,
-      teachingScore: 5,
-      feedback: "Excellent professor! Very clear explanations and always available to help. The course material was challenging but fair.",
-      courses: [{ course: "Data Structures", grade: "A" }],
-      tags: [t.clearExplanations, t.helpful, t.fairGrading],
-      badges: [
-        { type: "verified_student" as const },
-        { type: "graduated_course" as const, courseName: "Data Structures", grade: "A" }
-      ]
-    },
-    {
-      id: 2,
-      reviewerName: "Sarah M.",
-      date: "1 month ago",
-      overallRating: 8,
-      teachingScore: 4,
-      feedback: "Great teaching style and very organized lectures. Exams can be tough but she prepares you well.",
-      courses: [{ course: "Algorithms", grade: "B+" }],
-      tags: [t.engagingLectures, t.challengingExams, t.greatFeedback],
-      badges: [
-        { type: "verified_student" as const }
-      ]
-    },
-    {
-      id: 3,
-      reviewerName: "Mike R.",
-      date: "2 months ago",
-      overallRating: 7,
-      teachingScore: 4,
-      feedback: "Good professor overall. Sometimes moves a bit fast through material, but office hours are very helpful.",
-      courses: [{ course: "Computer Science 101", grade: "B" }],
-      tags: [t.availableOutsideClass, t.helpful],
-      badges: []
-    }
-  ];
 
   const getTeachingLabel = () => {
     switch (category) {
@@ -183,7 +148,17 @@ const ProfessorDetail = () => {
     setCourseGrades(updated);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    if (!user) {
+      toast({
+        title: t.authError || "Authentication required",
+        description: "Please sign in to submit a review",
+        variant: "destructive"
+      });
+      navigate("/auth");
+      return;
+    }
+
     if (category === 'psychologist') {
       if (overallRating === 0 || teachingRating === 0 || comfortLevel === 0) {
         toast({
@@ -204,10 +179,48 @@ const ProfessorDetail = () => {
       }
     }
 
-    toast({
-      title: t.reviewSubmitted,
-      description: t.thankYouFeedback
+    if (!feedback.trim()) {
+      toast({
+        title: "Missing feedback",
+        description: "Please provide your feedback",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    const success = await submitReview({
+      professional_id: id || "",
+      category,
+      overall_rating: overallRating,
+      teaching_rating: teachingRating,
+      feedback: feedback.trim(),
+      tags: selectedTags,
+      courses: courseGrades.filter(cg => cg.course.trim()),
+      comfort_level: category === 'psychologist' ? comfortLevel : undefined,
+      workplace_environment: category === 'psychologist' ? workplaceEnvironment : undefined,
+      recommend_to_friend: category === 'psychologist' ? recommendToFriend === 'yes' : undefined
     });
+
+    setIsSubmitting(false);
+
+    if (success) {
+      toast({
+        title: t.reviewSubmitted,
+        description: t.thankYouFeedback
+      });
+
+      // Reset form
+      setOverallRating(0);
+      setTeachingRating(0);
+      setFeedback("");
+      setSelectedTags([]);
+      setCourseGrades([{ course: "", grade: "" }]);
+      setWorkplaceEnvironment("");
+      setRecommendToFriend("");
+      setComfortLevel(0);
+    }
   };
 
   return (
@@ -269,76 +282,77 @@ const ProfessorDetail = () => {
           )}>
             <h2 className="text-2xl font-bold mb-6">{t.reviews} ({reviews.length})</h2>
             
-            <div className="space-y-6">
-              {reviews.map((review) => (
-                <div key={review.id} className="border-b border-border last:border-0 pb-6 last:pb-0">
-                  <div className="flex justify-between items-start mb-3">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <p className="font-semibold">{review.reviewerName}</p>
-                        {review.badges && review.badges.length > 0 && (
-                          <div className="flex gap-1 flex-wrap">
-                            {review.badges.map((badge, idx) => (
-                              <UserBadge 
-                                key={idx} 
-                                type={badge.type}
-                                courseName={badge.courseName}
-                                grade={badge.grade}
-                              />
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                      <p className="text-sm text-muted-foreground">{review.date}</p>
-                    </div>
-                    <div className="flex gap-4">
-                      <div className="text-center">
-                        <div className={cn(
-                          "text-2xl font-bold",
-                          review.overallRating >= 8 ? "text-success" : 
-                          review.overallRating >= 5 ? "text-warning" : "text-destructive"
-                        )}>
-                          {review.overallRating}
+            {reviewsLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              </div>
+            ) : reviews.length === 0 ? (
+              <p className="text-muted-foreground text-center py-8">No reviews yet. Be the first to share your experience!</p>
+            ) : (
+              <div className="space-y-6">
+                {reviews.map((review) => (
+                  <div key={review.id} className="border-b border-border last:border-0 pb-6 last:pb-0">
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <p className="font-semibold">{review.profile?.username || "Anonymous"}</p>
+                          {review.profile?.university_email && (
+                            <UserBadge type="verified_student" />
+                          )}
                         </div>
-                        <div className="text-xs text-muted-foreground">{t.overallRating}</div>
+                        <p className="text-sm text-muted-foreground">
+                          {formatDistanceToNow(new Date(review.created_at), { addSuffix: true })}
+                        </p>
+                      </div>
+                      <div className="flex gap-4">
+                        <div className="text-center">
+                          <div className={cn(
+                            "text-2xl font-bold",
+                            review.overall_rating >= 8 ? "text-success" : 
+                            review.overall_rating >= 5 ? "text-warning" : "text-destructive"
+                          )}>
+                            {review.overall_rating}
+                          </div>
+                          <div className="text-xs text-muted-foreground">{t.overallRating}</div>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="mb-3">
-                    <div className="flex items-center gap-2 mb-1">
-                      <StarRating rating={review.teachingScore} readonly size="sm" />
-                      <span className="text-sm text-muted-foreground">{getTeachingLabel()}</span>
-                    </div>
-                  </div>
-
-                  {review.courses.length > 0 && (
                     <div className="mb-3">
-                      <p className="text-sm font-medium mb-1">{getCoursesLabel()}:</p>
+                      <div className="flex items-center gap-2 mb-1">
+                        <StarRating rating={review.teaching_rating} readonly size="sm" />
+                        <span className="text-sm text-muted-foreground">{getTeachingLabel()}</span>
+                      </div>
+                    </div>
+
+                    {review.courses && review.courses.length > 0 && (
+                      <div className="mb-3">
+                        <p className="text-sm font-medium mb-1">{getCoursesLabel()}:</p>
+                        <div className="flex flex-wrap gap-2">
+                          {review.courses.map((cg, idx) => (
+                            <Badge key={idx} variant="secondary">
+                              {cg.course} - {cg.grade}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <p className="text-foreground mb-3">{review.feedback}</p>
+
+                    {review.tags && review.tags.length > 0 && (
                       <div className="flex flex-wrap gap-2">
-                        {review.courses.map((cg, idx) => (
-                          <Badge key={idx} variant="secondary">
-                            {cg.course} - {cg.grade}
+                        {review.tags.map((tag, idx) => (
+                          <Badge key={idx} variant="outline">
+                            {tag}
                           </Badge>
                         ))}
                       </div>
-                    </div>
-                  )}
-
-                  <p className="text-foreground mb-3">{review.feedback}</p>
-
-                  {review.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {review.tags.map((tag, idx) => (
-                        <Badge key={idx} variant="outline">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </Card>
 
           <Card className={cn(
@@ -499,8 +513,15 @@ const ProfessorDetail = () => {
                 </div>
               </div>
 
-              <Button onClick={handleSubmit} size="lg" className="w-full">
-                {t.submitReviewButton}
+              <Button onClick={handleSubmit} size="lg" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  t.submitReviewButton
+                )}
               </Button>
             </div>
           </Card>
