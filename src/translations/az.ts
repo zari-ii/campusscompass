@@ -117,4 +117,8 @@ export const az = {
   invalidCredentials: "Yanlış email və ya şifrə",
   userAlreadyExists: "Bu email artıq qeydiyyatdan keçib. Daxil olun.",
   emailNotConfirmed: "Daxil olmadan əvvəl emailinizi təsdiqləyin.",
+  
+  // Content moderation
+  submissionBlocked: "Göndərmə Bloklandı",
+  profanityError: "Zəhmət olmasa rəyinizin kobud və ya uyğunsuz ifadələr ehtiva etmədiyinə əmin olun.",
 };

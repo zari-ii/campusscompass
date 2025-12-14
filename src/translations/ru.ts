@@ -118,4 +118,8 @@ export const ru = {
   invalidCredentials: "Неверный email или пароль",
   userAlreadyExists: "Этот email уже зарегистрирован. Пожалуйста, войдите.",
   emailNotConfirmed: "Пожалуйста, подтвердите ваш email перед входом.",
+  
+  // Content moderation
+  submissionBlocked: "Отправка заблокирована",
+  profanityError: "Пожалуйста, убедитесь, что ваш отзыв не содержит вульгарных или неуместных выражений.",
 };

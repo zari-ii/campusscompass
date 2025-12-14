@@ -117,4 +117,8 @@ export const en = {
   invalidCredentials: "Invalid email or password",
   userAlreadyExists: "This email is already registered. Please sign in instead.",
   emailNotConfirmed: "Please confirm your email before signing in.",
+  
+  // Content moderation
+  submissionBlocked: "Submission Blocked",
+  profanityError: "Please ensure your feedback does not contain vulgar or inappropriate language.",
 };
