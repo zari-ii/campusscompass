@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface CourseGrade {
   course: string;
@@ -46,6 +47,25 @@ export const useReviews = (professionalId: string) => {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useLanguage();
+
+  const moderateContent = async (content: string): Promise<boolean> => {
+    try {
+      const { data, error } = await supabase.functions.invoke('moderate-content', {
+        body: { content }
+      });
+
+      if (error) {
+        console.error('Moderation error:', error);
+        return true; // Allow submission if moderation fails
+      }
+
+      return data?.isClean ?? true;
+    } catch (error) {
+      console.error('Error calling moderation:', error);
+      return true; // Allow submission if moderation fails
+    }
+  };
 
   const fetchReviews = async () => {
     try {
@@ -110,6 +130,18 @@ export const useReviews = (professionalId: string) => {
     }
 
     try {
+      // Check content moderation before submitting
+      const isClean = await moderateContent(reviewData.feedback);
+      
+      if (!isClean) {
+        toast({
+          title: t.submissionBlocked,
+          description: t.profanityError,
+          variant: "destructive"
+        });
+        return false;
+      }
+
       const insertData = {
         user_id: user.id,
         professional_id: reviewData.professional_id,
