@@ -121,4 +121,18 @@ export const az = {
   // Content moderation
   submissionBlocked: "Göndərmə Bloklandı",
   profanityError: "Zəhmət olmasa rəyinizin kobud və ya uyğunsuz ifadələr ehtiva etmədiyinə əmin olun.",
+  
+  // Review management
+  editReview: "Rəyi Redaktə Et",
+  deleteReview: "Rəyi Sil",
+  deleteReviewTitle: "Rəyi Sil",
+  deleteReviewDescription: "Bu rəyi silmək istədiyinizə əminsiniz? Bu əməliyyat geri alına bilməz.",
+  cancel: "Ləğv et",
+  delete: "Sil",
+  reviewUpdated: "Rəy Yeniləndi",
+  reviewUpdatedMessage: "Rəyiniz uğurla yeniləndi.",
+  reviewDeleted: "Rəy Silindi",
+  reviewDeletedMessage: "Rəyiniz silindi.",
+  errorUpdatingReview: "Rəy yenilənərkən xəta",
+  errorDeletingReview: "Rəy silinərkən xəta",
 };

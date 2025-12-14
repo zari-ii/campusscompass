@@ -173,6 +173,104 @@ export const useReviews = (professionalId: string) => {
     }
   };
 
+  const updateReview = async (reviewId: string, reviewData: Partial<SubmitReviewData>): Promise<boolean> => {
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please sign in to update a review",
+        variant: "destructive"
+      });
+      return false;
+    }
+
+    try {
+      // Check content moderation if feedback is being updated
+      if (reviewData.feedback) {
+        const isClean = await moderateContent(reviewData.feedback);
+        
+        if (!isClean) {
+          toast({
+            title: t.submissionBlocked,
+            description: t.profanityError,
+            variant: "destructive"
+          });
+          return false;
+        }
+      }
+
+      const updateData: Record<string, unknown> = {};
+      if (reviewData.overall_rating !== undefined) updateData.overall_rating = reviewData.overall_rating;
+      if (reviewData.teaching_rating !== undefined) updateData.teaching_rating = reviewData.teaching_rating;
+      if (reviewData.feedback !== undefined) updateData.feedback = reviewData.feedback;
+      if (reviewData.tags !== undefined) updateData.tags = reviewData.tags;
+      if (reviewData.courses !== undefined) updateData.courses = JSON.parse(JSON.stringify(reviewData.courses));
+      if (reviewData.comfort_level !== undefined) updateData.comfort_level = reviewData.comfort_level;
+      if (reviewData.workplace_environment !== undefined) updateData.workplace_environment = reviewData.workplace_environment;
+      if (reviewData.recommend_to_friend !== undefined) updateData.recommend_to_friend = reviewData.recommend_to_friend;
+
+      const { error } = await supabase
+        .from("reviews")
+        .update(updateData)
+        .eq("id", reviewId)
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+
+      toast({
+        title: t.reviewUpdated,
+        description: t.reviewUpdatedMessage
+      });
+
+      return true;
+    } catch (error: unknown) {
+      console.error("Error updating review:", error);
+      const errorMessage = error instanceof Error ? error.message : "Something went wrong";
+      toast({
+        title: t.errorUpdatingReview,
+        description: errorMessage,
+        variant: "destructive"
+      });
+      return false;
+    }
+  };
+
+  const deleteReview = async (reviewId: string): Promise<boolean> => {
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please sign in to delete a review",
+        variant: "destructive"
+      });
+      return false;
+    }
+
+    try {
+      const { error } = await supabase
+        .from("reviews")
+        .delete()
+        .eq("id", reviewId)
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+
+      toast({
+        title: t.reviewDeleted,
+        description: t.reviewDeletedMessage
+      });
+
+      return true;
+    } catch (error: unknown) {
+      console.error("Error deleting review:", error);
+      const errorMessage = error instanceof Error ? error.message : "Something went wrong";
+      toast({
+        title: t.errorDeletingReview,
+        description: errorMessage,
+        variant: "destructive"
+      });
+      return false;
+    }
+  };
+
   // Set up realtime subscription
   useEffect(() => {
     fetchReviews();
@@ -202,6 +300,8 @@ export const useReviews = (professionalId: string) => {
     reviews,
     loading,
     submitReview,
+    updateReview,
+    deleteReview,
     refetch: fetchReviews
   };
 };

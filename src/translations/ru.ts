@@ -122,4 +122,18 @@ export const ru = {
   // Content moderation
   submissionBlocked: "Отправка заблокирована",
   profanityError: "Пожалуйста, убедитесь, что ваш отзыв не содержит вульгарных или неуместных выражений.",
+  
+  // Review management
+  editReview: "Редактировать отзыв",
+  deleteReview: "Удалить отзыв",
+  deleteReviewTitle: "Удалить отзыв",
+  deleteReviewDescription: "Вы уверены, что хотите удалить этот отзыв? Это действие нельзя отменить.",
+  cancel: "Отмена",
+  delete: "Удалить",
+  reviewUpdated: "Отзыв обновлён",
+  reviewUpdatedMessage: "Ваш отзыв успешно обновлён.",
+  reviewDeleted: "Отзыв удалён",
+  reviewDeletedMessage: "Ваш отзыв был удалён.",
+  errorUpdatingReview: "Ошибка обновления отзыва",
+  errorDeletingReview: "Ошибка удаления отзыва",
 };
