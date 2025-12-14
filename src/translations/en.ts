@@ -121,4 +121,18 @@ export const en = {
   // Content moderation
   submissionBlocked: "Submission Blocked",
   profanityError: "Please ensure your feedback does not contain vulgar or inappropriate language.",
+  
+  // Review management
+  editReview: "Edit Review",
+  deleteReview: "Delete Review",
+  deleteReviewTitle: "Delete Review",
+  deleteReviewDescription: "Are you sure you want to delete this review? This action cannot be undone.",
+  cancel: "Cancel",
+  delete: "Delete",
+  reviewUpdated: "Review Updated",
+  reviewUpdatedMessage: "Your review has been updated successfully.",
+  reviewDeleted: "Review Deleted",
+  reviewDeletedMessage: "Your review has been deleted.",
+  errorUpdatingReview: "Error updating review",
+  errorDeletingReview: "Error deleting review",
 };
