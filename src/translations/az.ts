@@ -16,6 +16,7 @@ export const az = {
   courses: "Kurslar",
   coursesDesc: "Akademik kursları və proqramları qiymətləndirin və rəy verin",
   reviews: "rəylər",
+  comingSoon: "Tezliklə",
   
   // Professors page
   findAndRate: "Müəllimlərinizi tapın və qiymətləndirin",

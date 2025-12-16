@@ -16,6 +16,7 @@ export const ru = {
   courses: "Курсы",
   coursesDesc: "Оцените академические курсы и программы",
   reviews: "отзывов",
+  comingSoon: "Скоро",
   
   // Professors page
   findAndRate: "Найдите и оцените ваших преподавателей",
