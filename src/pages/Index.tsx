@@ -12,28 +12,32 @@ const Index = () => {
       description: t.professorsDesc,
       icon: GraduationCap,
       path: "/professors",
-      count: 1247
+      count: 1247,
+      comingSoon: false
     },
     {
       title: t.psychologists,
       description: t.psychologistsDesc,
       icon: Brain,
       path: "/psychologists",
-      count: 892
+      count: 892,
+      comingSoon: true
     },
     {
       title: t.tutorsCoaches,
       description: t.tutorsCoachesDesc,
       icon: Users,
       path: "/tutors",
-      count: 634
+      count: 634,
+      comingSoon: true
     },
     {
       title: t.courses,
       description: t.coursesDesc,
       icon: BookText,
       path: "/courses",
-      count: 2156
+      count: 2156,
+      comingSoon: true
     }
   ];
 

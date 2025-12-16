@@ -16,6 +16,7 @@ export const en = {
   courses: "Courses",
   coursesDesc: "Review and rate academic courses and programs",
   reviews: "reviews",
+  comingSoon: "Coming Soon",
   
   // Professors page
   findAndRate: "Find and rate your professors",
