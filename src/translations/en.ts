@@ -122,7 +122,12 @@ export const en = {
   
   // Content moderation
   submissionBlocked: "Submission Blocked",
-  profanityError: "Please ensure your feedback does not contain vulgar or inappropriate language.",
+  profanityError: "Your submission contains inappropriate language. Please revise your content and try again.",
+  profanityWarning: "Content Warning",
+  profanityWarningDesc: "Please ensure your feedback does not contain vulgar, offensive, or inappropriate language in any language (English, Azerbaijani, Russian).",
+  reviseContent: "Please revise your content",
+  contentGuidelines: "Content Guidelines",
+  contentGuidelinesDesc: "Keep your feedback respectful and constructive. Avoid profanity, hate speech, personal attacks, and inappropriate content.",
   
   // Review management
   editReview: "Edit Review",
