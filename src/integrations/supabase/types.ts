@@ -131,11 +131,59 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["user_id"]
           },
+          {
+            foreignKeyName: "user_badges_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_public"
+            referencedColumns: ["user_id"]
+          },
         ]
+      }
+      user_surveys: {
+        Row: {
+          academic_year: string | null
+          created_at: string
+          how_found_us: string | null
+          id: string
+          previous_platform: string | null
+          user_id: string
+        }
+        Insert: {
+          academic_year?: string | null
+          created_at?: string
+          how_found_us?: string | null
+          id?: string
+          previous_platform?: string | null
+          user_id: string
+        }
+        Update: {
+          academic_year?: string | null
+          created_at?: string
+          how_found_us?: string | null
+          id?: string
+          previous_platform?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
     }
     Views: {
-      [_ in never]: never
+      profiles_public: {
+        Row: {
+          user_id: string | null
+          username: string | null
+        }
+        Insert: {
+          user_id?: string | null
+          username?: string | null
+        }
+        Update: {
+          user_id?: string | null
+          username?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
