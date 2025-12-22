@@ -34,7 +34,6 @@ interface SubmitReviewData {
   professional_id: string;
   category: string;
   overall_rating: number;
-  teaching_rating: number;
   feedback: string;
   tags: string[];
   courses: CourseGrade[];
@@ -152,7 +151,6 @@ export const useReviews = (professionalId: string) => {
         professional_id: reviewData.professional_id,
         category: reviewData.category,
         overall_rating: reviewData.overall_rating,
-        teaching_rating: reviewData.teaching_rating,
         feedback: reviewData.feedback,
         tags: reviewData.tags,
         courses: JSON.parse(JSON.stringify(reviewData.courses)),
@@ -210,7 +208,6 @@ export const useReviews = (professionalId: string) => {
 
       const updateData: Record<string, unknown> = {};
       if (reviewData.overall_rating !== undefined) updateData.overall_rating = reviewData.overall_rating;
-      if (reviewData.teaching_rating !== undefined) updateData.teaching_rating = reviewData.teaching_rating;
       if (reviewData.feedback !== undefined) updateData.feedback = reviewData.feedback;
       if (reviewData.tags !== undefined) updateData.tags = reviewData.tags;
       if (reviewData.courses !== undefined) updateData.courses = JSON.parse(JSON.stringify(reviewData.courses));

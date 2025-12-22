@@ -129,7 +129,7 @@ export type Database = {
           recommend_to_friend: boolean | null
           status: string
           tags: string[] | null
-          teaching_rating: number
+          teaching_rating: number | null
           updated_at: string
           user_id: string
           workplace_environment: string | null
@@ -146,7 +146,7 @@ export type Database = {
           recommend_to_friend?: boolean | null
           status?: string
           tags?: string[] | null
-          teaching_rating: number
+          teaching_rating?: number | null
           updated_at?: string
           user_id: string
           workplace_environment?: string | null
@@ -163,7 +163,7 @@ export type Database = {
           recommend_to_friend?: boolean | null
           status?: string
           tags?: string[] | null
-          teaching_rating?: number
+          teaching_rating?: number | null
           updated_at?: string
           user_id?: string
           workplace_environment?: string | null
