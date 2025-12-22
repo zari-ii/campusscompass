@@ -26,6 +26,7 @@ interface ReviewWithProfile {
   profile: {
     username: string;
     university_email: string | null;
+    is_anonymous: boolean;
   } | null;
 }
 
@@ -90,11 +91,11 @@ export const useReviews = (professionalId: string) => {
       const userIds = [...new Set(reviewsData.map(r => r.user_id))];
       const { data: profilesData } = await supabase
         .from("profiles")
-        .select("user_id, username, university_email")
+        .select("user_id, username, university_email, is_anonymous")
         .in("user_id", userIds);
 
       const profilesMap = new Map(
-        profilesData?.map(p => [p.user_id, { username: p.username, university_email: p.university_email }]) || []
+        profilesData?.map(p => [p.user_id, { username: p.username, university_email: p.university_email, is_anonymous: p.is_anonymous }]) || []
       );
 
       const reviewsWithProfiles: ReviewWithProfile[] = reviewsData.map(review => ({

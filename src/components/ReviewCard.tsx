@@ -45,6 +45,7 @@ interface ReviewWithProfile {
   profile: {
     username: string;
     university_email: string | null;
+    is_anonymous: boolean;
   } | null;
 }
 
@@ -109,8 +110,10 @@ export const ReviewCard = ({
       <div className="flex justify-between items-start mb-3">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <p className="font-semibold">{review.profile?.username || "Anonymous"}</p>
-            {review.profile?.university_email && (
+            <p className="font-semibold">
+              {review.profile?.is_anonymous ? t.anonymous : (review.profile?.username || t.anonymous)}
+            </p>
+            {!review.profile?.is_anonymous && review.profile?.university_email && (
               <UserBadge type="verified_student" />
             )}
           </div>

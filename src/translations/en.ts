@@ -253,6 +253,13 @@ export const en = {
   usernameCannotBeChanged: "Username cannot be changed after account creation.",
   usernameWarning: "⚠️ Warning: Usernames cannot be changed after creation. Please choose carefully.",
   error: "Error",
+  anonymousMode: "Anonymous Mode",
+  anonymousModeDescription: "Hide your username on reviews and show as 'Anonymous'",
+  anonymityEnabled: "Your reviews will now show as Anonymous",
+  anonymityDisabled: "Your username will now be visible on reviews",
+  anonymous: "Anonymous",
+  emailVerificationRequired: "Please check your email to verify your account before signing in.",
+  emailVerificationSent: "Verification email sent! Please check your inbox.",
   
   // Notifications
   notifications: "Notifications",
