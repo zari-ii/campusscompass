@@ -181,7 +181,7 @@ export const useReviews = (professionalId: string) => {
     }
   };
 
-  const updateReview = async (reviewId: string, reviewData: Partial<SubmitReviewData>): Promise<boolean> => {
+  const updateReview = async (reviewId: string, reviewData: Partial<SubmitReviewData>, isAdmin: boolean = false): Promise<boolean> => {
     if (!user) {
       toast({
         title: "Authentication required",
@@ -216,11 +216,18 @@ export const useReviews = (professionalId: string) => {
       if (reviewData.workplace_environment !== undefined) updateData.workplace_environment = reviewData.workplace_environment;
       if (reviewData.recommend_to_friend !== undefined) updateData.recommend_to_friend = reviewData.recommend_to_friend;
 
-      const { error } = await supabase
+      // Admins can update any review, regular users can only update their own
+      let query = supabase
         .from("reviews")
         .update(updateData)
-        .eq("id", reviewId)
-        .eq("user_id", user.id);
+        .eq("id", reviewId);
+      
+      // Only filter by user_id if not an admin
+      if (!isAdmin) {
+        query = query.eq("user_id", user.id);
+      }
+
+      const { error } = await query;
 
       if (error) throw error;
 
@@ -242,7 +249,7 @@ export const useReviews = (professionalId: string) => {
     }
   };
 
-  const deleteReview = async (reviewId: string): Promise<boolean> => {
+  const deleteReview = async (reviewId: string, isAdmin: boolean = false): Promise<boolean> => {
     if (!user) {
       toast({
         title: "Authentication required",
@@ -253,11 +260,18 @@ export const useReviews = (professionalId: string) => {
     }
 
     try {
-      const { error } = await supabase
+      // Admins can delete any review, regular users can only delete their own
+      let query = supabase
         .from("reviews")
         .delete()
-        .eq("id", reviewId)
-        .eq("user_id", user.id);
+        .eq("id", reviewId);
+      
+      // Only filter by user_id if not an admin
+      if (!isAdmin) {
+        query = query.eq("user_id", user.id);
+      }
+
+      const { error } = await query;
 
       if (error) throw error;
 

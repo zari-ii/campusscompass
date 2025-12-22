@@ -51,8 +51,8 @@ interface ReviewWithProfile {
 interface ReviewCardProps {
   review: ReviewWithProfile;
   category: string;
-  onUpdate: (reviewId: string, data: { feedback: string; overall_rating: number; teaching_rating: number }) => Promise<boolean>;
-  onDelete: (reviewId: string) => Promise<boolean>;
+  onUpdate: (reviewId: string, data: { feedback: string; overall_rating: number; teaching_rating: number }, isAdmin?: boolean) => Promise<boolean>;
+  onDelete: (reviewId: string, isAdmin?: boolean) => Promise<boolean>;
   getTeachingLabel: () => string;
   getCoursesLabel: () => string;
 }
@@ -88,7 +88,7 @@ export const ReviewCard = ({
       feedback: editFeedback.trim(),
       overall_rating: editOverallRating,
       teaching_rating: editTeachingRating
-    });
+    }, showAdminControls);
     setIsUpdating(false);
 
     if (success) {
@@ -105,7 +105,7 @@ export const ReviewCard = ({
 
   const handleDelete = async () => {
     setIsDeleting(true);
-    await onDelete(review.id);
+    await onDelete(review.id, showAdminControls);
     setIsDeleting(false);
   };
 
