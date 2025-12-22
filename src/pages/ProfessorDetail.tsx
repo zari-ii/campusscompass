@@ -46,14 +46,59 @@ const ProfessorDetail = () => {
   const { user } = useAuth();
   const { reviews, loading: reviewsLoading, submitReview, updateReview, deleteReview } = useReviews(id || "");
 
-  // Mock professor data (would be fetched from database in production)
+  // Professor data by ID
+  const professorData: Record<string, { name: string; department: string; university: string }> = {
+    // SPIA
+    "1": { name: "Orkhan Nadirov", department: "SPIA", university: "ADA University" },
+    "2": { name: "Ferit Murat Ozkaleli", department: "SPIA", university: "ADA University" },
+    "3": { name: "Kavus Abushov", department: "SPIA", university: "ADA University" },
+    "4": { name: "Sarvar Gurbanov", department: "SPIA", university: "ADA University" },
+    "5": { name: "Ali Saqer", department: "SPIA", university: "ADA University" },
+    // BBA
+    "6": { name: "Elkin Nurmammadov", department: "BBA", university: "ADA University" },
+    "7": { name: "Azra Brankovic", department: "BBA", university: "ADA University" },
+    "8": { name: "Hulisi Ogut", department: "BBA", university: "ADA University" },
+    "9": { name: "Narmina Rustamova", department: "BBA", university: "ADA University" },
+    "10": { name: "Farid Gadirli", department: "BBA", university: "ADA University" },
+    // SITE
+    "11": { name: "Samir Rustamov", department: "SITE", university: "ADA University" },
+    "12": { name: "Araz Yusubov", department: "SITE", university: "ADA University" },
+    "13": { name: "Fuad Hajiyev", department: "SITE", university: "ADA University" },
+    "14": { name: "Burcu Ramazanli", department: "SITE", university: "ADA University" },
+    "15": { name: "Azar Aliyev", department: "SITE", university: "ADA University" },
+    // EDUCATION
+    "16": { name: "Vafa Kazdal", department: "Education", university: "ADA University" },
+    "17": { name: "Ulker Ibrahimova", department: "Education", university: "ADA University" },
+    "18": { name: "Samira Hajiyeva", department: "Education", university: "ADA University" },
+    // LLB
+    "19": { name: "Azad Talibov", department: "LLB", university: "ADA University" },
+    "20": { name: "Kamala Nazarova", department: "LLB", university: "ADA University" },
+    "21": { name: "Emin Karimov", department: "LLB", university: "ADA University" },
+    "22": { name: "Juan Rodrigo Labardini Flores", department: "LLB", university: "ADA University" },
+    "23": { name: "Aynur Akhundli", department: "LLB", university: "ADA University" },
+    // SAFS
+    "24": { name: "Saida Aliyeva", department: "SAFS", university: "ADA University" },
+    "25": { name: "Matilde Tura", department: "SAFS", university: "ADA University" },
+    "26": { name: "Asaf Omarov", department: "SAFS", university: "ADA University" },
+    "27": { name: "Giacomo Zanello", department: "SAFS", university: "ADA University" },
+    "28": { name: "Marcello Russ", department: "SAFS", university: "ADA University" },
+    // SDA
+    "29": { name: "Marco Bovati", department: "SDA", university: "ADA University" },
+    "30": { name: "Emir Huseynov", department: "SDA", university: "ADA University" },
+    "31": { name: "Stefania Sini", department: "SDA", university: "ADA University" },
+    "32": { name: "Deniz Ozge Aytac", department: "SDA", university: "ADA University" },
+    "33": { name: "Carl Haddrell", department: "SDA", university: "ADA University" },
+  };
+
+  const currentProfessor = professorData[id || "1"] || { name: "Unknown", department: "Unknown", university: "ADA University" };
+
   const professor = {
     id: id || "1",
-    name: "Dr. Sarah Johnson",
-    department: "Computer Science",
-    university: "State University",
-    rating: 8.5,
-    teachingScore: 4.5,
+    name: currentProfessor.name,
+    department: currentProfessor.department,
+    university: currentProfessor.university,
+    rating: 0,
+    teachingScore: 0,
     totalReviews: reviews.length
   };
 
