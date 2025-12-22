@@ -122,7 +122,12 @@ export const az = {
   
   // Content moderation
   submissionBlocked: "Göndərmə Bloklandı",
-  profanityError: "Zəhmət olmasa rəyinizin kobud və ya uyğunsuz ifadələr ehtiva etmədiyinə əmin olun.",
+  profanityError: "Göndərişiniz uyğunsuz dil ehtiva edir. Zəhmət olmasa məzmununuzu yenidən nəzərdən keçirin və yenidən cəhd edin.",
+  profanityWarning: "Məzmun Xəbərdarlığı",
+  profanityWarningDesc: "Zəhmət olmasa rəyinizin heç bir dildə (Azərbaycan, Rus, İngilis) kobud, təhqiredici və ya uyğunsuz ifadələr ehtiva etmədiyinə əmin olun.",
+  reviseContent: "Zəhmət olmasa məzmununuzu yenidən nəzərdən keçirin",
+  contentGuidelines: "Məzmun Qaydaları",
+  contentGuidelinesDesc: "Rəylərinizi hörmətli və konstruktiv saxlayın. Söyüş, nifrət nitqi, şəxsi hücumlar və uyğunsuz məzmundan çəkinin.",
   
   // Review management
   editReview: "Rəyi Redaktə Et",

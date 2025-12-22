@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Loader2 } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Plus, Loader2, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -22,6 +23,7 @@ export const AddProfessorDialog = ({ category = "professor", onSuccess }: AddPro
   const [university, setUniversity] = useState("ADA University");
   const [department, setDepartment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [moderationError, setModerationError] = useState<string | null>(null);
   
   const { user } = useAuth();
   const { toast } = useToast();
@@ -39,8 +41,32 @@ export const AddProfessorDialog = ({ category = "professor", onSuccess }: AddPro
     "Other"
   ];
 
+  const moderateContent = async (content: string): Promise<boolean> => {
+    try {
+      const { data, error } = await supabase.functions.invoke('moderate-content', {
+        body: { content }
+      });
+
+      if (error) {
+        console.error('Moderation error:', error);
+        return true;
+      }
+
+      if (data?.blocked) {
+        setModerationError(data.message || t.profanityError);
+        return false;
+      }
+
+      return data?.isClean ?? true;
+    } catch (error) {
+      console.error('Error calling moderation:', error);
+      return true;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setModerationError(null);
 
     if (!user) {
       toast({
@@ -64,6 +90,18 @@ export const AddProfessorDialog = ({ category = "professor", onSuccess }: AddPro
     setIsSubmitting(true);
 
     try {
+      // Check content moderation for name
+      const isNameClean = await moderateContent(name);
+      if (!isNameClean) {
+        setIsSubmitting(false);
+        toast({
+          title: t.submissionBlocked,
+          description: t.profanityError,
+          variant: "destructive"
+        });
+        return;
+      }
+
       const { error } = await supabase
         .from("professionals")
         .insert({
@@ -84,6 +122,7 @@ export const AddProfessorDialog = ({ category = "professor", onSuccess }: AddPro
       // Reset form
       setName("");
       setDepartment("");
+      setModerationError(null);
       setOpen(false);
       onSuccess?.();
     } catch (error) {
@@ -126,10 +165,23 @@ export const AddProfessorDialog = ({ category = "professor", onSuccess }: AddPro
               id="name"
               placeholder="Enter professor name"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                setName(e.target.value);
+                setModerationError(null);
+              }}
               required
             />
           </div>
+
+          {moderationError && (
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>
+                {moderationError}
+                <p className="mt-2 text-sm">{t.reviseContent}</p>
+              </AlertDescription>
+            </Alert>
+          )}
 
           <div className="space-y-2">
             <Label htmlFor="university">University *</Label>

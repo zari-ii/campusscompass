@@ -49,7 +49,7 @@ export const useReviews = (professionalId: string) => {
   const { toast } = useToast();
   const { t } = useLanguage();
 
-  const moderateContent = async (content: string): Promise<boolean> => {
+  const moderateContent = async (content: string): Promise<{ isClean: boolean; message?: string }> => {
     try {
       const { data, error } = await supabase.functions.invoke('moderate-content', {
         body: { content }
@@ -57,13 +57,16 @@ export const useReviews = (professionalId: string) => {
 
       if (error) {
         console.error('Moderation error:', error);
-        return true; // Allow submission if moderation fails
+        return { isClean: true }; // Allow submission if moderation fails
       }
 
-      return data?.isClean ?? true;
+      return {
+        isClean: data?.isClean ?? true,
+        message: data?.message
+      };
     } catch (error) {
       console.error('Error calling moderation:', error);
-      return true; // Allow submission if moderation fails
+      return { isClean: true }; // Allow submission if moderation fails
     }
   };
 
@@ -131,12 +134,12 @@ export const useReviews = (professionalId: string) => {
 
     try {
       // Check content moderation before submitting
-      const isClean = await moderateContent(reviewData.feedback);
+      const moderationResult = await moderateContent(reviewData.feedback);
       
-      if (!isClean) {
+      if (!moderationResult.isClean) {
         toast({
           title: t.submissionBlocked,
-          description: t.profanityError,
+          description: moderationResult.message || t.profanityError,
           variant: "destructive"
         });
         return false;
@@ -191,12 +194,12 @@ export const useReviews = (professionalId: string) => {
     try {
       // Check content moderation if feedback is being updated
       if (reviewData.feedback) {
-        const isClean = await moderateContent(reviewData.feedback);
+        const moderationResult = await moderateContent(reviewData.feedback);
         
-        if (!isClean) {
+        if (!moderationResult.isClean) {
           toast({
             title: t.submissionBlocked,
-            description: t.profanityError,
+            description: moderationResult.message || t.profanityError,
             variant: "destructive"
           });
           return false;

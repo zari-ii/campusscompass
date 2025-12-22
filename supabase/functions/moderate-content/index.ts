@@ -5,7 +5,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Comprehensive profanity list (common offensive terms)
+// Comprehensive profanity list for quick filtering
 const profanityList = [
   // English profanity
   'fuck', 'fucking', 'fucked', 'fucker', 'fucks', 'motherfucker', 'motherfucking',
@@ -20,16 +20,7 @@ const profanityList = [
   'piss', 'pissed', 'pissing',
   'whore', 'whores',
   'slut', 'sluts', 'slutty',
-  'crap', 'crappy',
-  'idiot', 'idiots', 'idiotic',
-  'stupid', 'stupidity',
   'retard', 'retarded', 'retards',
-  'moron', 'morons', 'moronic',
-  'dumb', 'dumbass',
-  'loser', 'losers',
-  'jerk', 'jerks',
-  'scum', 'scumbag',
-  'trash', 'trashy',
   'wanker', 'wankers',
   'twat', 'twats',
   'prick', 'pricks',
@@ -43,34 +34,49 @@ const profanityList = [
   'kike', 'kikes',
   'wetback', 'wetbacks',
   // Azerbaijani profanity
-  'siktir', 'sikdir', 'sikmək', 'sikim',
-  'göt', 'götün',
-  'orospu', 'orospunun',
-  'peysər', 'peysər',
-  'qancıq', 'qanciğ',
+  'siktir', 'sikdir', 'sikmək', 'sikim', 'sik',
+  'göt', 'götün', 'götü',
+  'orospu', 'orospunun', 'orosbu',
+  'peysər', 'peyser',
+  'qancıq', 'qanciğ', 'qanciq',
   'lotu', 'lotunu',
-  'fahişə',
-  'xanım', 'xanimsan',
-  'dəli',
+  'fahişə', 'fahise',
+  'dəli', 'deli',
+  'axmaq', 'axmağ',
+  'əclaf', 'eclaf',
+  'donuz', 'donuzun',
+  'it', 'itə', 'iti',
+  'şələ', 'sele',
+  'gic', 'gicbəsər',
+  'vələd', 'veled',
   // Russian profanity
-  'блядь', 'бля', 'блять',
-  'сука', 'суки',
-  'хуй', 'хуи', 'хуя', 'хуем',
-  'пизда', 'пизды', 'пиздец',
-  'ебать', 'ебаный', 'ебаться', 'ебал',
-  'мудак', 'мудаки',
+  'блядь', 'бля', 'блять', 'блядина',
+  'сука', 'суки', 'сучка',
+  'хуй', 'хуи', 'хуя', 'хуем', 'хуёвый',
+  'пизда', 'пизды', 'пиздец', 'пиздёж',
+  'ебать', 'ебаный', 'ебаться', 'ебал', 'ёбаный',
+  'мудак', 'мудаки', 'мудила',
   'залупа',
-  'говно', 'говна',
+  'говно', 'говна', 'говнюк',
   'дерьмо',
-  'жопа', 'жопы',
+  'жопа', 'жопы', 'жопой',
   'идиот', 'идиоты',
-  'дебил', 'дебилы',
+  'дебил', 'дебилы', 'дебильный',
   'урод', 'уроды',
   'тварь', 'твари',
   'дрянь',
+  'падла', 'падлы',
+  'сволочь', 'сволочи',
+  'козёл', 'козел', 'козлы',
+  'шлюха', 'шлюхи',
+  'педик', 'педики', 'пидор', 'пидорас',
+  // Transliterated Russian
+  'blyad', 'suka', 'hui', 'pizda', 'ebat', 'mudak', 'govno', 'zhopa',
+  // Transliterated Azerbaijani
+  'siktir', 'got', 'orospu', 'qanciq', 'axmaq',
 ];
 
-function containsProfanity(text: string): { hasProfanity: boolean; matchedWords: string[] } {
+function containsProfanityQuick(text: string): { hasProfanity: boolean; matchedWords: string[] } {
   const normalizedText = text.toLowerCase();
   const matchedWords: string[] = [];
   
@@ -88,6 +94,91 @@ function containsProfanity(text: string): { hasProfanity: boolean; matchedWords:
   };
 }
 
+async function moderateWithAI(content: string): Promise<{ isClean: boolean; reason?: string }> {
+  const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+  
+  if (!LOVABLE_API_KEY) {
+    console.log('LOVABLE_API_KEY not configured, skipping AI moderation');
+    return { isClean: true };
+  }
+
+  try {
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash-lite",
+        messages: [
+          {
+            role: "system",
+            content: `You are a content moderation assistant. Analyze the provided text for inappropriate content.
+            
+Check for:
+1. Vulgar language, profanity, or obscenities in ANY language (especially English, Azerbaijani, Russian)
+2. Hate speech, slurs, or discriminatory language
+3. Personal attacks, threats, or harassment
+4. Sexual or explicit content
+5. Spam or promotional content
+
+Respond with ONLY a JSON object in this exact format:
+{"isClean": true} if the content is appropriate
+{"isClean": false, "reason": "brief explanation"} if inappropriate
+
+Be strict but fair. Academic criticism and honest reviews are acceptable.
+Disguised profanity (like "f*ck", "sh!t", intentional misspellings) should be flagged.`
+          },
+          {
+            role: "user",
+            content: `Analyze this content for moderation:\n\n"${content}"`
+          }
+        ],
+      }),
+    });
+
+    if (!response.ok) {
+      if (response.status === 429) {
+        console.log('AI moderation rate limited, falling back to keyword filter');
+        return { isClean: true };
+      }
+      if (response.status === 402) {
+        console.log('AI moderation payment required, falling back to keyword filter');
+        return { isClean: true };
+      }
+      console.error('AI moderation error:', response.status);
+      return { isClean: true };
+    }
+
+    const data = await response.json();
+    const aiResponse = data.choices?.[0]?.message?.content || '';
+    
+    console.log('AI moderation response:', aiResponse);
+
+    // Parse the AI response
+    try {
+      // Extract JSON from the response (handle cases where AI adds extra text)
+      const jsonMatch = aiResponse.match(/\{[^}]+\}/);
+      if (jsonMatch) {
+        const parsed = JSON.parse(jsonMatch[0]);
+        return {
+          isClean: parsed.isClean === true,
+          reason: parsed.reason
+        };
+      }
+    } catch (parseError) {
+      console.error('Error parsing AI response:', parseError);
+    }
+
+    // Fallback: check if response indicates clean content
+    return { isClean: !aiResponse.toLowerCase().includes('"isclean": false') };
+  } catch (error) {
+    console.error('AI moderation error:', error);
+    return { isClean: true }; // Allow on error to not block legitimate content
+  }
+}
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -95,7 +186,7 @@ serve(async (req) => {
   }
 
   try {
-    const { content } = await req.json();
+    const { content, useAI = true } = await req.json();
     
     if (!content || typeof content !== 'string') {
       return new Response(
@@ -104,19 +195,51 @@ serve(async (req) => {
       );
     }
 
-    console.log('Moderating content:', content.substring(0, 100) + '...');
+    console.log('Moderating content:', content.substring(0, 100) + (content.length > 100 ? '...' : ''));
     
-    const result = containsProfanity(content);
+    // Step 1: Quick keyword filter
+    const keywordResult = containsProfanityQuick(content);
     
-    console.log('Moderation result:', { hasProfanity: result.hasProfanity, matchCount: result.matchedWords.length });
+    if (keywordResult.hasProfanity) {
+      console.log('Content blocked by keyword filter:', keywordResult.matchedWords);
+      return new Response(
+        JSON.stringify({
+          isClean: false,
+          blocked: true,
+          reason: 'inappropriate_language',
+          message: 'Content contains inappropriate language. Please revise and try again.',
+          detectedLanguages: ['en', 'az', 'ru']
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
+    // Step 2: AI-based moderation for more nuanced detection
+    if (useAI) {
+      const aiResult = await moderateWithAI(content);
+      
+      if (!aiResult.isClean) {
+        console.log('Content blocked by AI moderation:', aiResult.reason);
+        return new Response(
+          JSON.stringify({
+            isClean: false,
+            blocked: true,
+            reason: 'ai_moderation',
+            message: aiResult.reason || 'Content may contain inappropriate language. Please revise and try again.',
+            detectedLanguages: ['en', 'az', 'ru']
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+    }
+
+    console.log('Content passed moderation');
+    
     return new Response(
       JSON.stringify({
-        isClean: !result.hasProfanity,
-        blocked: result.hasProfanity,
-        message: result.hasProfanity 
-          ? 'Content contains inappropriate language' 
-          : 'Content is clean'
+        isClean: true,
+        blocked: false,
+        message: 'Content is clean'
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
