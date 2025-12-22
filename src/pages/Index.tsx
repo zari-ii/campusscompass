@@ -2,9 +2,11 @@ import { Header } from "@/components/Header";
 import { CategoryCard } from "@/components/CategoryCard";
 import { GraduationCap, Brain, Users, BookText } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useTotalReviewCount } from "@/hooks/useTotalReviewCount";
 
 const Index = () => {
   const { t } = useLanguage();
+  const { count: professorReviewCount } = useTotalReviewCount();
   
   const categories = [
     {
@@ -12,7 +14,7 @@ const Index = () => {
       description: t.professorsDesc,
       icon: GraduationCap,
       path: "/professors",
-      count: 1247,
+      count: professorReviewCount,
       comingSoon: false
     },
     {
@@ -20,7 +22,7 @@ const Index = () => {
       description: t.psychologistsDesc,
       icon: Brain,
       path: "/psychologists",
-      count: 892,
+      count: 0,
       comingSoon: true
     },
     {
@@ -28,7 +30,7 @@ const Index = () => {
       description: t.tutorsCoachesDesc,
       icon: Users,
       path: "/tutors",
-      count: 634,
+      count: 0,
       comingSoon: true
     },
     {
@@ -36,7 +38,7 @@ const Index = () => {
       description: t.coursesDesc,
       icon: BookText,
       path: "/courses",
-      count: 2156,
+      count: 0,
       comingSoon: true
     }
   ];
