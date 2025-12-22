@@ -1,8 +1,26 @@
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { StarRating } from "./StarRating";
 import { cn } from "@/lib/utils";
+import { useAdmin } from "@/hooks/useAdmin";
+import { useAdminView } from "@/contexts/AdminViewContext";
+import { Trash2, Pencil, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface ProfessorCardProps {
   id: string;
@@ -15,6 +33,7 @@ interface ProfessorCardProps {
   tags: string[];
   category?: "professor" | "psychologist" | "tutor" | "course";
   reviewCount?: number;
+  onDelete?: () => void;
 }
 
 export const ProfessorCard = ({ 
@@ -27,8 +46,15 @@ export const ProfessorCard = ({
   courses,
   tags,
   category = "professor",
-  reviewCount = 0
+  reviewCount = 0,
+  onDelete
 }: ProfessorCardProps) => {
+  const { isAdmin } = useAdmin();
+  const { viewAsUser } = useAdminView();
+  const { toast } = useToast();
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const showAdminControls = isAdmin && !viewAsUser;
   const getUniversityLabel = () => {
     switch (category) {
       case "psychologist": return "Workplace";
@@ -65,12 +91,89 @@ export const ProfessorCard = ({
     return "text-muted-foreground";
   };
 
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    setIsDeleting(true);
+    try {
+      const { error } = await supabase
+        .from('professionals')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Professor deleted",
+        description: "The professor profile has been removed."
+      });
+      
+      onDelete?.();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete professor",
+        variant: "destructive"
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
-    <Link to={`/professor/${id}`}>
-      <Card className={cn(
-        "p-6 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-primary/50",
-        "bg-card"
-      )}>
+    <Card className={cn(
+      "p-6 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:border-primary/50",
+      "bg-card relative"
+    )}>
+      {showAdminControls && (
+        <div className="absolute top-2 right-2 flex gap-1 z-10">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              window.location.href = `/admin/moderation`;
+            }}
+          >
+            <Pencil className="h-4 w-4" />
+          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-destructive hover:text-destructive"
+                disabled={isDeleting}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {isDeleting ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Trash2 className="h-4 w-4" />
+                )}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete Professor</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to delete "{name}"? This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      )}
+      <Link to={`/professor/${id}`}>
         <div className="space-y-4">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
@@ -116,7 +219,7 @@ export const ProfessorCard = ({
             ))}
           </div>
         </div>
-      </Card>
-    </Link>
+      </Link>
+    </Card>
   );
 };

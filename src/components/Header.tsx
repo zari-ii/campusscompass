@@ -5,7 +5,10 @@ import { ThemeToggle } from "./ThemeToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdmin } from "@/hooks/useAdmin";
+import { useAdminView } from "@/contexts/AdminViewContext";
 import { Avatar, AvatarFallback } from "./ui/avatar";
+import { Switch } from "./ui/switch";
+import { Label } from "./ui/label";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,13 +16,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { LogOut, Shield, User } from "lucide-react";
+import { LogOut, Shield, Eye, EyeOff } from "lucide-react";
 import logo from "@/assets/campus-compass-logo.jpg";
 
 export const Header = () => {
   const { t } = useLanguage();
   const { user, loading, signOut } = useAuth();
   const { isAdmin } = useAdmin();
+  const { viewAsUser, toggleViewAsUser } = useAdminView();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -75,6 +79,27 @@ export const Header = () => {
                         <Shield className="mr-2 h-4 w-4" />
                         Admin Moderation
                       </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      className="cursor-pointer flex items-center justify-between"
+                      onSelect={(e) => e.preventDefault()}
+                    >
+                      <div className="flex items-center">
+                        {viewAsUser ? (
+                          <EyeOff className="mr-2 h-4 w-4" />
+                        ) : (
+                          <Eye className="mr-2 h-4 w-4" />
+                        )}
+                        <Label htmlFor="view-as-user" className="cursor-pointer">
+                          View as User
+                        </Label>
+                      </div>
+                      <Switch 
+                        id="view-as-user"
+                        checked={viewAsUser}
+                        onCheckedChange={toggleViewAsUser}
+                        className="ml-2"
+                      />
                     </DropdownMenuItem>
                   </>
                 )}

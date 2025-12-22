@@ -6,8 +6,10 @@ import { StarRating } from "@/components/StarRating";
 import { UserBadge } from "@/components/UserBadge";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAdmin } from "@/hooks/useAdmin";
+import { useAdminView } from "@/contexts/AdminViewContext";
 import { formatDistanceToNow } from "date-fns";
-import { Pencil, Trash2, X, Check, Loader2 } from "lucide-react";
+import { Pencil, Trash2, X, Check, Loader2, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   AlertDialog,
@@ -65,6 +67,8 @@ export const ReviewCard = ({
 }: ReviewCardProps) => {
   const { t } = useLanguage();
   const { user } = useAuth();
+  const { isAdmin } = useAdmin();
+  const { viewAsUser } = useAdminView();
   const [isEditing, setIsEditing] = useState(false);
   const [editFeedback, setEditFeedback] = useState(review.feedback);
   const [editOverallRating, setEditOverallRating] = useState(review.overall_rating);
@@ -73,6 +77,8 @@ export const ReviewCard = ({
   const [isDeleting, setIsDeleting] = useState(false);
 
   const isOwner = user?.id === review.user_id;
+  const showAdminControls = isAdmin && !viewAsUser;
+  const canEditOrDelete = isOwner || showAdminControls;
 
   const handleSave = async () => {
     if (!editFeedback.trim()) return;
@@ -118,8 +124,14 @@ export const ReviewCard = ({
           </p>
         </div>
         <div className="flex items-center gap-4">
-          {isOwner && !isEditing && (
-            <div className="flex gap-2">
+          {canEditOrDelete && !isEditing && (
+            <div className="flex gap-2 items-center">
+              {showAdminControls && !isOwner && (
+                <Badge variant="outline" className="text-xs flex items-center gap-1">
+                  <Shield className="h-3 w-3" />
+                  Admin
+                </Badge>
+              )}
               <Button
                 variant="ghost"
                 size="icon"

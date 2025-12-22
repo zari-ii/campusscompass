@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { AdminViewProvider } from "@/contexts/AdminViewContext";
 import { CookieConsent } from "@/components/CookieConsent";
 import Index from "./pages/Index";
 import Professors from "./pages/Professors";
@@ -24,7 +25,8 @@ const App = () => (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <LanguageProvider>
         <AuthProvider>
-          <TooltipProvider>
+          <AdminViewProvider>
+            <TooltipProvider>
             <Toaster />
             <Sonner />
             <BrowserRouter>
@@ -44,7 +46,8 @@ const App = () => (
               </Routes>
               <CookieConsent />
             </BrowserRouter>
-          </TooltipProvider>
+            </TooltipProvider>
+          </AdminViewProvider>
         </AuthProvider>
       </LanguageProvider>
     </ThemeProvider>
