@@ -167,6 +167,7 @@ const Professors = () => {
                   teachingScore={reviewStats?.avgTeaching || professor.teachingScore}
                   reviewCount={reviewStats?.reviewCount || 0}
                   category={category}
+                  onDelete={refetch}
                 />
               );
             })}
