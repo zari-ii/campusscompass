@@ -51,9 +51,8 @@ interface ReviewWithProfile {
 interface ReviewCardProps {
   review: ReviewWithProfile;
   category: string;
-  onUpdate: (reviewId: string, data: { feedback: string; overall_rating: number; teaching_rating: number }, isAdmin?: boolean) => Promise<boolean>;
+  onUpdate: (reviewId: string, data: { feedback: string; overall_rating: number }, isAdmin?: boolean) => Promise<boolean>;
   onDelete: (reviewId: string, isAdmin?: boolean) => Promise<boolean>;
-  getTeachingLabel: () => string;
   getCoursesLabel: () => string;
 }
 
@@ -62,7 +61,6 @@ export const ReviewCard = ({
   category, 
   onUpdate, 
   onDelete, 
-  getTeachingLabel, 
   getCoursesLabel 
 }: ReviewCardProps) => {
   const { t } = useLanguage();
@@ -72,7 +70,6 @@ export const ReviewCard = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editFeedback, setEditFeedback] = useState(review.feedback);
   const [editOverallRating, setEditOverallRating] = useState(review.overall_rating);
-  const [editTeachingRating, setEditTeachingRating] = useState(review.teaching_rating);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -86,8 +83,7 @@ export const ReviewCard = ({
     setIsUpdating(true);
     const success = await onUpdate(review.id, {
       feedback: editFeedback.trim(),
-      overall_rating: editOverallRating,
-      teaching_rating: editTeachingRating
+      overall_rating: editOverallRating
     }, showAdminControls);
     setIsUpdating(false);
 
@@ -99,7 +95,6 @@ export const ReviewCard = ({
   const handleCancel = () => {
     setEditFeedback(review.feedback);
     setEditOverallRating(review.overall_rating);
-    setEditTeachingRating(review.teaching_rating);
     setIsEditing(false);
   };
 
@@ -224,17 +219,6 @@ export const ReviewCard = ({
               </>
             )}
           </div>
-        </div>
-      </div>
-
-      <div className="mb-3">
-        <div className="flex items-center gap-2 mb-1">
-          {isEditing ? (
-            <StarRating rating={editTeachingRating} onRatingChange={setEditTeachingRating} size="sm" />
-          ) : (
-            <StarRating rating={review.teaching_rating} readonly size="sm" />
-          )}
-          <span className="text-sm text-muted-foreground">{getTeachingLabel()}</span>
         </div>
       </div>
 
