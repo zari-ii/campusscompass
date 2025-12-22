@@ -3,16 +3,19 @@ import { useNavigate, Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Users, FileText, BarChart3, Cookie, TrendingUp, Calendar, Loader2, Shield } from "lucide-react";
+import { Users, FileText, BarChart3, Cookie, TrendingUp, Calendar, Loader2, Shield, Clock, AlertCircle } from "lucide-react";
 
 interface AnalyticsData {
   totalUsers: number;
   totalReviews: number;
   totalSurveys: number;
   recentSignups: number;
+  pendingProfessors: number;
+  pendingReviews: number;
   surveyBreakdown: {
     academicYear: Record<string, number>;
     howFoundUs: Record<string, number>;
@@ -88,6 +91,17 @@ const AdminDashboard = () => {
         .select("*", { count: "exact", head: true })
         .gte("created_at", sevenDaysAgo.toISOString());
 
+      // Fetch pending counts
+      const { count: pendingProfsCount } = await supabase
+        .from("professionals")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "pending");
+
+      const { count: pendingReviewsCount } = await supabase
+        .from("reviews")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "pending");
+
       // Process survey data
       const surveyBreakdown = {
         academicYear: {} as Record<string, number>,
@@ -123,6 +137,8 @@ const AdminDashboard = () => {
         totalReviews: reviewsCount || 0,
         totalSurveys: surveysCount || 0,
         recentSignups: recentCount || 0,
+        pendingProfessors: pendingProfsCount || 0,
+        pendingReviews: pendingReviewsCount || 0,
         surveyBreakdown,
         reviewStats: {
           averageRating: reviews?.length ? totalRating / reviews.length : 0,
@@ -167,9 +183,43 @@ const AdminDashboard = () => {
                 {t.adminDashboardDesc || "Overview of platform analytics and user data"}
               </p>
             </div>
+          </div>
+
+          {/* Pending Items Alert */}
+          {analytics && (analytics.pendingProfessors > 0 || analytics.pendingReviews > 0) && (
+            <Card className="border-yellow-500/50 bg-yellow-500/5">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-full bg-yellow-500/10">
+                      <AlertCircle className="h-5 w-5 text-yellow-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Pending Submissions</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {analytics.pendingProfessors} professor{analytics.pendingProfessors !== 1 ? 's' : ''} and {analytics.pendingReviews} review{analytics.pendingReviews !== 1 ? 's' : ''} awaiting moderation
+                      </p>
+                    </div>
+                  </div>
+                  <Link to="/admin/moderation">
+                    <Button className="gap-2">
+                      <Shield className="h-4 w-4" />
+                      Review Now
+                      <Badge variant="destructive" className="ml-1">
+                        {analytics.pendingProfessors + analytics.pendingReviews}
+                      </Badge>
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Quick Actions */}
+          <div className="flex gap-3">
             <Link to="/admin/moderation">
-              <Button className="gap-2">
-                <Shield className="h-4 w-4" />
+              <Button variant="outline" className="gap-2">
+                <Clock className="h-4 w-4" />
                 Content Moderation
               </Button>
             </Link>
