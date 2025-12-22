@@ -4,19 +4,22 @@ import { LanguageSelector } from "./LanguageSelector";
 import { ThemeToggle } from "./ThemeToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAdmin } from "@/hooks/useAdmin";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { LogOut, User } from "lucide-react";
+import { LogOut, Shield, User } from "lucide-react";
 import logo from "@/assets/campus-compass-logo.jpg";
 
 export const Header = () => {
   const { t } = useLanguage();
   const { user, loading, signOut } = useAuth();
+  const { isAdmin } = useAdmin();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -64,6 +67,18 @@ export const Header = () => {
                   <p className="text-sm font-medium">{user.user_metadata?.username || "User"}</p>
                   <p className="text-xs text-muted-foreground">{user.email}</p>
                 </DropdownMenuItem>
+                {isAdmin && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild className="cursor-pointer">
+                      <Link to="/admin/moderation" className="flex items-center">
+                        <Shield className="mr-2 h-4 w-4" />
+                        Admin Moderation
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
+                <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut} className="text-destructive cursor-pointer">
                   <LogOut className="mr-2 h-4 w-4" />
                   {t.signOut}
