@@ -279,18 +279,17 @@ const ProfessorDetail = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="container py-12">
-        {/* Floating Back Button */}
-        <Button 
-          variant="outline" 
-          onClick={() => navigate(-1)} 
-          className="fixed top-20 left-4 z-50 shadow-lg hover:shadow-xl transition-shadow bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          {t.back}
-        </Button>
-
-        <div className="max-w-4xl mx-auto space-y-8">
+      <main className="container py-6 md:py-12">
+        <div className="max-w-4xl mx-auto space-y-6 md:space-y-8">
+          {/* Back Button */}
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate(-1)} 
+            className="gap-2 -ml-2 hover:bg-muted"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            {t.back}
+          </Button>
           
           <Card className={cn(
             "p-8",
