@@ -241,7 +241,6 @@ const ProfessorDetail = () => {
       professional_id: id || "",
       category,
       overall_rating: overallRating,
-      teaching_rating: overallRating, // Use overall rating for both
       feedback: feedback.trim(),
       tags: selectedTags,
       courses: courseGrades.filter(cg => cg.course.trim()),
