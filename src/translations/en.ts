@@ -244,4 +244,26 @@ export const en = {
   platformReddit: "Reddit",
   platformWordOfMouth: "Word of Mouth",
   platformOther: "Other",
+  
+  // Profile
+  myProfile: "My Profile",
+  profileUpdated: "Profile Updated",
+  avatarUpdatedMessage: "Your profile picture has been updated.",
+  clickToChangeAvatar: "Click to change your profile picture",
+  usernameCannotBeChanged: "Username cannot be changed after account creation.",
+  usernameWarning: "⚠️ Warning: Usernames cannot be changed after creation. Please choose carefully.",
+  error: "Error",
+  
+  // Notifications
+  notifications: "Notifications",
+  markAllRead: "Mark all read",
+  noNotifications: "No notifications yet",
+  reviewApproved: "Review Approved",
+  reviewApprovedMessage: "Your review has been approved and is now visible.",
+  reviewRejected: "Review Rejected",
+  reviewRejectedMessage: "Your review has been rejected.",
+  professorApproved: "Professor Approved",
+  professorApprovedMessage: "The professor you added has been approved.",
+  professorRejected: "Professor Rejected",
+  professorRejectedMessage: "The professor you added has been rejected.",
 };

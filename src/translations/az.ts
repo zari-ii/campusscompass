@@ -244,4 +244,26 @@ export const az = {
   platformReddit: "Reddit",
   platformWordOfMouth: "Şifahi",
   platformOther: "Digər",
+  
+  // Profile
+  myProfile: "Profilim",
+  profileUpdated: "Profil Yeniləndi",
+  avatarUpdatedMessage: "Profil şəkliniz yeniləndi.",
+  clickToChangeAvatar: "Profil şəklinizi dəyişmək üçün klikləyin",
+  usernameCannotBeChanged: "Hesab yaradıldıqdan sonra istifadəçi adı dəyişdirilə bilməz.",
+  usernameWarning: "⚠️ Xəbərdarlıq: İstifadəçi adları yaradıldıqdan sonra dəyişdirilə bilməz. Diqqətlə seçin.",
+  error: "Xəta",
+  
+  // Notifications
+  notifications: "Bildirişlər",
+  markAllRead: "Hamısını oxunmuş kimi işarələ",
+  noNotifications: "Hələ bildiriş yoxdur",
+  reviewApproved: "Rəy Təsdiqləndi",
+  reviewApprovedMessage: "Rəyiniz təsdiqləndi və artıq görünür.",
+  reviewRejected: "Rəy Rədd Edildi",
+  reviewRejectedMessage: "Rəyiniz rədd edildi.",
+  professorApproved: "Müəllim Təsdiqləndi",
+  professorApprovedMessage: "Əlavə etdiyiniz müəllim təsdiqləndi.",
+  professorRejected: "Müəllim Rədd Edildi",
+  professorRejectedMessage: "Əlavə etdiyiniz müəllim rədd edildi.",
 };

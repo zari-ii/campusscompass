@@ -245,4 +245,26 @@ export const ru = {
   platformReddit: "Reddit",
   platformWordOfMouth: "Сарафанное радио",
   platformOther: "Другое",
+  
+  // Profile
+  myProfile: "Мой Профиль",
+  profileUpdated: "Профиль обновлён",
+  avatarUpdatedMessage: "Ваше фото профиля обновлено.",
+  clickToChangeAvatar: "Нажмите, чтобы изменить фото профиля",
+  usernameCannotBeChanged: "Имя пользователя нельзя изменить после создания аккаунта.",
+  usernameWarning: "⚠️ Внимание: Имя пользователя нельзя изменить после создания. Выбирайте внимательно.",
+  error: "Ошибка",
+  
+  // Notifications
+  notifications: "Уведомления",
+  markAllRead: "Отметить все прочитанными",
+  noNotifications: "Пока нет уведомлений",
+  reviewApproved: "Отзыв одобрен",
+  reviewApprovedMessage: "Ваш отзыв одобрен и теперь виден.",
+  reviewRejected: "Отзыв отклонён",
+  reviewRejectedMessage: "Ваш отзыв был отклонён.",
+  professorApproved: "Преподаватель одобрен",
+  professorApprovedMessage: "Добавленный вами преподаватель одобрен.",
+  professorRejected: "Преподаватель отклонён",
+  professorRejectedMessage: "Добавленный вами преподаватель был отклонён.",
 };
