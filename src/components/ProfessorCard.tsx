@@ -56,6 +56,15 @@ export const ProfessorCard = ({
     }
   };
 
+  const getRatingColor = (rating: number) => {
+    if (rating >= 9) return "text-rating-excellent";
+    if (rating >= 8) return "text-rating-great";
+    if (rating >= 7) return "text-rating-good";
+    if (rating >= 6) return "text-rating-average";
+    if (rating > 0) return "text-rating-poor";
+    return "text-muted-foreground";
+  };
+
   return (
     <Link to={`/professor/${id}`}>
       <Card className={cn(
@@ -70,10 +79,7 @@ export const ProfessorCard = ({
               <p className="text-xs text-muted-foreground">{university}</p>
             </div>
             <div className="flex flex-col items-end gap-2">
-              <div className={cn(
-                "text-3xl font-bold",
-                rating >= 8 ? "text-success" : rating >= 5 ? "text-warning" : rating > 0 ? "text-destructive" : "text-muted-foreground"
-              )}>
+              <div className={cn("text-3xl font-bold", getRatingColor(rating))}>
                 {rating > 0 ? rating.toFixed(1) : "N/A"}
               </div>
               <div className="text-xs text-muted-foreground">

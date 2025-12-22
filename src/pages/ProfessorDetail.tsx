@@ -299,10 +299,13 @@ const ProfessorDetail = () => {
                 <div className="text-center">
                   <div className={cn(
                     "text-5xl font-bold mb-1",
-                    professor.rating >= 8 ? "text-success" : 
-                    professor.rating >= 5 ? "text-warning" : "text-destructive"
+                    professor.rating >= 9 ? "text-rating-excellent" : 
+                    professor.rating >= 8 ? "text-rating-great" : 
+                    professor.rating >= 7 ? "text-rating-good" : 
+                    professor.rating >= 6 ? "text-rating-average" : 
+                    professor.rating > 0 ? "text-rating-poor" : "text-muted-foreground"
                   )}>
-                    {professor.rating.toFixed(1)}
+                    {professor.rating > 0 ? professor.rating.toFixed(1) : "N/A"}
                   </div>
                   <div className="text-sm text-muted-foreground">{t.overallRating}</div>
                 </div>
