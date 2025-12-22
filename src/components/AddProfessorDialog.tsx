@@ -77,8 +77,8 @@ export const AddProfessorDialog = ({ category = "professor", onSuccess }: AddPro
       if (error) throw error;
 
       toast({
-        title: "Professor added",
-        description: `${name} has been added successfully`
+        title: "Submission received",
+        description: `${name} has been submitted for review. An admin will approve it shortly.`
       });
 
       // Reset form
