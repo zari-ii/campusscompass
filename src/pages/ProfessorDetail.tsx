@@ -34,7 +34,6 @@ const ProfessorDetail = () => {
                    id?.startsWith('c') ? 'course' : 'professor';
   
   const [overallRating, setOverallRating] = useState(0);
-  const [teachingRating, setTeachingRating] = useState(0);
   const [feedback, setFeedback] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [courseGrades, setCourseGrades] = useState<CourseGrade[]>([{ course: "", grade: "" }]);
@@ -96,9 +95,6 @@ const ProfessorDetail = () => {
   const calculatedRating = reviews.length > 0 
     ? reviews.reduce((sum, r) => sum + r.overall_rating, 0) / reviews.length 
     : 0;
-  const calculatedTeaching = reviews.length > 0 
-    ? reviews.reduce((sum, r) => sum + r.teaching_rating, 0) / reviews.length 
-    : 0;
 
   const professor = {
     id: id || "1",
@@ -106,7 +102,6 @@ const ProfessorDetail = () => {
     department: currentProfessor.department,
     university: currentProfessor.university,
     rating: calculatedRating,
-    teachingScore: calculatedTeaching,
     totalReviews: reviews.length
   };
 
@@ -212,7 +207,7 @@ const ProfessorDetail = () => {
     }
 
     if (category === 'psychologist') {
-      if (overallRating === 0 || teachingRating === 0 || comfortLevel === 0) {
+      if (overallRating === 0 || comfortLevel === 0) {
         toast({
           title: t.missingRatings,
           description: "Please provide all required ratings",
@@ -221,7 +216,7 @@ const ProfessorDetail = () => {
         return;
       }
     } else {
-      if (overallRating === 0 || teachingRating === 0) {
+      if (overallRating === 0) {
         toast({
           title: t.missingRatings,
           description: t.provideRatings,
@@ -246,7 +241,7 @@ const ProfessorDetail = () => {
       professional_id: id || "",
       category,
       overall_rating: overallRating,
-      teaching_rating: teachingRating,
+      teaching_rating: overallRating, // Use overall rating for both
       feedback: feedback.trim(),
       tags: selectedTags,
       courses: courseGrades.filter(cg => cg.course.trim()),
@@ -265,7 +260,6 @@ const ProfessorDetail = () => {
 
       // Reset form
       setOverallRating(0);
-      setTeachingRating(0);
       setFeedback("");
       setSelectedTags([]);
       setCourseGrades([{ course: "", grade: "" }]);
@@ -317,12 +311,6 @@ const ProfessorDetail = () => {
                   <div className="text-sm text-muted-foreground">{t.overallRating}</div>
                 </div>
                 <div className="text-center">
-                  <div className="mb-2">
-                    <StarRating rating={Math.round(professor.teachingScore)} readonly size="lg" />
-                  </div>
-                  <div className="text-sm text-muted-foreground">{getTeachingLabel()}</div>
-                </div>
-                <div className="text-center">
                   <div className="text-3xl font-bold mb-1">{professor.totalReviews}</div>
                   <div className="text-sm text-muted-foreground">{t.reviews}</div>
                 </div>
@@ -351,7 +339,6 @@ const ProfessorDetail = () => {
                     category={category}
                     onUpdate={updateReview}
                     onDelete={deleteReview}
-                    getTeachingLabel={getTeachingLabel}
                     getCoursesLabel={getCoursesLabel}
                   />
                 ))}
@@ -418,7 +405,7 @@ const ProfessorDetail = () => {
 
                   <div className="space-y-2">
                     <Label>{t.approachStyleLabel}</Label>
-                    <StarRating rating={teachingRating} onRatingChange={setTeachingRating} size="lg" />
+                    <StarRating rating={overallRating} onRatingChange={setOverallRating} size="lg" />
                   </div>
                 </>
               ) : (
@@ -437,11 +424,6 @@ const ProfessorDetail = () => {
                         />
                         <span className="text-sm text-muted-foreground">{t.outOf10}</span>
                       </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>{getTeachingLabel()}</Label>
-                      <StarRating rating={teachingRating} onRatingChange={setTeachingRating} size="lg" />
                     </div>
                   </div>
 
