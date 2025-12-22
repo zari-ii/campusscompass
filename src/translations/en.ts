@@ -38,6 +38,7 @@ export const en = {
   yourFeedback: "Your Feedback",
   feedbackPlaceholder: "Share your experience with this professor...",
   tags: "Tags",
+  addCustomTag: "Add custom tag...",
   submitReviewButton: "Submit Review",
   back: "Back",
   

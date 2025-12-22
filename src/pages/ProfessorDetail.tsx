@@ -491,7 +491,7 @@ const ProfessorDetail = () => {
                 />
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-4">
                 <Label>{t.tags}</Label>
                 <div className="flex flex-wrap gap-2">
                   {availableTags.map((tag) => (
@@ -504,6 +504,48 @@ const ProfessorDetail = () => {
                       {tag}
                     </Badge>
                   ))}
+                  {selectedTags.filter(tag => !availableTags.includes(tag)).map((customTag) => (
+                    <Badge
+                      key={customTag}
+                      variant="default"
+                      className="cursor-pointer transition-all hover:scale-105"
+                      onClick={() => toggleTag(customTag)}
+                    >
+                      {customTag} ✕
+                    </Badge>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <Input
+                    id="custom-tag"
+                    placeholder={t.addCustomTag || "Add custom tag..."}
+                    className="flex-1"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const input = e.currentTarget;
+                        const value = input.value.trim();
+                        if (value && !selectedTags.includes(value)) {
+                          setSelectedTags([...selectedTags, value]);
+                          input.value = '';
+                        }
+                      }
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      const input = document.getElementById('custom-tag') as HTMLInputElement;
+                      const value = input?.value.trim();
+                      if (value && !selectedTags.includes(value)) {
+                        setSelectedTags([...selectedTags, value]);
+                        input.value = '';
+                      }
+                    }}
+                  >
+                    <Plus className="w-4 h-4" />
+                  </Button>
                 </div>
               </div>
 

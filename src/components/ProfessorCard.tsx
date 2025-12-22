@@ -14,6 +14,7 @@ interface ProfessorCardProps {
   courses: string[];
   tags: string[];
   category?: "professor" | "psychologist" | "tutor" | "course";
+  reviewCount?: number;
 }
 
 export const ProfessorCard = ({ 
@@ -25,7 +26,8 @@ export const ProfessorCard = ({
   teachingScore,
   courses,
   tags,
-  category = "professor"
+  category = "professor",
+  reviewCount = 0
 }: ProfessorCardProps) => {
   const getUniversityLabel = () => {
     switch (category) {
@@ -70,11 +72,13 @@ export const ProfessorCard = ({
             <div className="flex flex-col items-end gap-2">
               <div className={cn(
                 "text-3xl font-bold",
-                rating >= 8 ? "text-success" : rating >= 5 ? "text-warning" : "text-destructive"
+                rating >= 8 ? "text-success" : rating >= 5 ? "text-warning" : rating > 0 ? "text-destructive" : "text-muted-foreground"
               )}>
-                {rating.toFixed(1)}
+                {rating > 0 ? rating.toFixed(1) : "N/A"}
               </div>
-              <div className="text-xs text-muted-foreground">Overall</div>
+              <div className="text-xs text-muted-foreground">
+                {reviewCount > 0 ? `${reviewCount} review${reviewCount !== 1 ? 's' : ''}` : "No reviews"}
+              </div>
             </div>
           </div>
           
