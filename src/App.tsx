@@ -6,10 +6,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { CookieConsent } from "@/components/CookieConsent";
 import Index from "./pages/Index";
 import Professors from "./pages/Professors";
 import ProfessorDetail from "./pages/ProfessorDetail";
 import Auth from "./pages/Auth";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +29,8 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/auth" element={<Auth />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/professors" element={<Professors />} />
                 <Route path="/psychologists" element={<Professors />} />
                 <Route path="/tutors" element={<Professors />} />
@@ -35,6 +40,7 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
+            <CookieConsent />
           </TooltipProvider>
         </AuthProvider>
       </LanguageProvider>
