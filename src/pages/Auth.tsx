@@ -197,6 +197,7 @@ const Auth = () => {
                   <Label htmlFor="username">{t.username}</Label>
                   <Input id="username" placeholder="anonymous_user" value={username} onChange={(e) => setUsername(e.target.value)} required />
                   <p className="text-xs text-muted-foreground">{t.usernameHint}</p>
+                  <p className="text-xs text-amber-600 dark:text-amber-400 font-medium">{t.usernameWarning}</p>
                 </div>
               )}
 

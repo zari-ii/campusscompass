@@ -143,12 +143,23 @@ const AdminModeration = () => {
   const handleApproveProfessional = async (id: string) => {
     setIsSubmitting(true);
     try {
+      const prof = professionals.find(p => p.id === id);
       const { error } = await supabase
         .from("professionals")
         .update({ status: "approved" })
         .eq("id", id);
 
       if (error) throw error;
+
+      // Send notification to the user who created it
+      if (prof?.created_by) {
+        await supabase.from("notifications").insert({
+          user_id: prof.created_by,
+          title: "Professor Approved",
+          message: `The professor "${prof.name}" you added has been approved and is now visible.`,
+          type: "success"
+        });
+      }
 
       toast({ title: "Professor approved", description: "Now visible on the public website." });
       setSelectedProfessional(null);
@@ -164,12 +175,23 @@ const AdminModeration = () => {
   const handleRejectProfessional = async (id: string) => {
     setIsSubmitting(true);
     try {
+      const prof = professionals.find(p => p.id === id);
       const { error } = await supabase
         .from("professionals")
         .update({ status: "rejected" })
         .eq("id", id);
 
       if (error) throw error;
+
+      // Send notification to the user who created it
+      if (prof?.created_by) {
+        await supabase.from("notifications").insert({
+          user_id: prof.created_by,
+          title: "Professor Rejected",
+          message: `The professor "${prof.name}" you added has been rejected.`,
+          type: "error"
+        });
+      }
 
       toast({ title: "Professor rejected", description: "Moved to rejected section." });
       setSelectedProfessional(null);
@@ -206,12 +228,23 @@ const AdminModeration = () => {
   const handleApproveReview = async (id: string) => {
     setIsSubmitting(true);
     try {
+      const review = reviews.find(r => r.id === id);
       const { error } = await supabase
         .from("reviews")
         .update({ status: "approved" })
         .eq("id", id);
 
       if (error) throw error;
+
+      // Send notification to the user who created the review
+      if (review?.user_id) {
+        await supabase.from("notifications").insert({
+          user_id: review.user_id,
+          title: "Review Approved",
+          message: `Your review for "${review.professional_name}" has been approved and is now visible.`,
+          type: "success"
+        });
+      }
 
       toast({ title: "Review approved", description: "Now visible on the public website." });
       setSelectedReview(null);
@@ -227,12 +260,23 @@ const AdminModeration = () => {
   const handleRejectReview = async (id: string) => {
     setIsSubmitting(true);
     try {
+      const review = reviews.find(r => r.id === id);
       const { error } = await supabase
         .from("reviews")
         .update({ status: "rejected" })
         .eq("id", id);
 
       if (error) throw error;
+
+      // Send notification to the user who created the review
+      if (review?.user_id) {
+        await supabase.from("notifications").insert({
+          user_id: review.user_id,
+          title: "Review Rejected",
+          message: `Your review for "${review.professional_name}" has been rejected.`,
+          type: "error"
+        });
+      }
 
       toast({ title: "Review rejected", description: "Moved to rejected section." });
       setSelectedReview(null);

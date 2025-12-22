@@ -12,6 +12,7 @@ import Index from "./pages/Index";
 import Professors from "./pages/Professors";
 import ProfessorDetail from "./pages/ProfessorDetail";
 import Auth from "./pages/Auth";
+import Profile from "./pages/Profile";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminModeration from "./pages/AdminModeration";
@@ -33,6 +34,7 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/auth" element={<Auth />} />
+                <Route path="/profile" element={<Profile />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin/moderation" element={<AdminModeration />} />
