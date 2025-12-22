@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,8 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdmin } from "@/hooks/useAdmin";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,10 +24,14 @@ import {
   FileText,
   Clock,
   CheckCircle,
-  XCircle
+  XCircle,
+  Eye,
+  ArrowLeft,
+  Trash2,
+  Archive
 } from "lucide-react";
 
-interface PendingProfessional {
+interface Professional {
   id: string;
   name: string;
   university: string;
@@ -36,7 +42,7 @@ interface PendingProfessional {
   created_by: string | null;
 }
 
-interface PendingReview {
+interface Review {
   id: string;
   professional_id: string;
   user_id: string;
@@ -47,6 +53,9 @@ interface PendingReview {
   status: string;
   created_at: string;
   professional_name?: string;
+  tags?: string[];
+  comfort_level?: number;
+  recommend_to_friend?: boolean;
 }
 
 const AdminModeration = () => {
@@ -56,16 +65,27 @@ const AdminModeration = () => {
   const { toast } = useToast();
   
   const [loading, setLoading] = useState(true);
-  const [pendingProfessionals, setPendingProfessionals] = useState<PendingProfessional[]>([]);
-  const [pendingReviews, setPendingReviews] = useState<PendingReview[]>([]);
-  const [approvedProfessionals, setApprovedProfessionals] = useState<PendingProfessional[]>([]);
-  const [approvedReviews, setApprovedReviews] = useState<PendingReview[]>([]);
+  const [professionals, setProfessionals] = useState<Professional[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  
+  // Detail view state
+  const [selectedProfessional, setSelectedProfessional] = useState<Professional | null>(null);
+  const [selectedReview, setSelectedReview] = useState<Review | null>(null);
   
   // Edit dialog state
-  const [editingProfessional, setEditingProfessional] = useState<PendingProfessional | null>(null);
-  const [editingReview, setEditingReview] = useState<PendingReview | null>(null);
+  const [editingProfessional, setEditingProfessional] = useState<Professional | null>(null);
+  const [editingReview, setEditingReview] = useState<Review | null>(null);
   const [editForm, setEditForm] = useState({ name: "", university: "", department: "", feedback: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Filter by status
+  const pendingProfessionals = professionals.filter(p => p.status === "pending");
+  const approvedProfessionals = professionals.filter(p => p.status === "approved");
+  const rejectedProfessionals = professionals.filter(p => p.status === "rejected");
+  
+  const pendingReviews = reviews.filter(r => r.status === "pending");
+  const approvedReviews = reviews.filter(r => r.status === "approved");
+  const rejectedReviews = reviews.filter(r => r.status === "rejected");
 
   useEffect(() => {
     if (!authLoading && !adminLoading) {
@@ -84,18 +104,15 @@ const AdminModeration = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      // Fetch professionals
+      // Fetch all professionals
       const { data: professionalsData } = await supabase
         .from("professionals")
         .select("*")
         .order("created_at", { ascending: false });
 
-      const pending = professionalsData?.filter(p => p.status === "pending") || [];
-      const approved = professionalsData?.filter(p => p.status === "approved") || [];
-      setPendingProfessionals(pending);
-      setApprovedProfessionals(approved);
+      setProfessionals(professionalsData || []);
 
-      // Fetch reviews
+      // Fetch all reviews
       const { data: reviewsData } = await supabase
         .from("reviews")
         .select("*")
@@ -115,8 +132,7 @@ const AdminModeration = () => {
         professional_name: profNameMap.get(r.professional_id) || "Unknown"
       })) || [];
 
-      setPendingReviews(reviewsWithNames.filter(r => r.status === "pending"));
-      setApprovedReviews(reviewsWithNames.filter(r => r.status === "approved"));
+      setReviews(reviewsWithNames);
     } catch (error) {
       console.error("Error fetching moderation data:", error);
     } finally {
@@ -134,7 +150,8 @@ const AdminModeration = () => {
 
       if (error) throw error;
 
-      toast({ title: "Professor approved", description: "The professor is now visible to users." });
+      toast({ title: "Professor approved", description: "Now visible on the public website." });
+      setSelectedProfessional(null);
       fetchData();
     } catch (error) {
       console.error("Error approving:", error);
@@ -154,7 +171,8 @@ const AdminModeration = () => {
 
       if (error) throw error;
 
-      toast({ title: "Professor rejected", description: "The professor has been rejected." });
+      toast({ title: "Professor rejected", description: "Moved to rejected section." });
+      setSelectedProfessional(null);
       fetchData();
     } catch (error) {
       console.error("Error rejecting:", error);
@@ -174,7 +192,8 @@ const AdminModeration = () => {
 
       if (error) throw error;
 
-      toast({ title: "Professor deleted", description: "The professor has been permanently deleted." });
+      toast({ title: "Professor deleted", description: "Permanently removed." });
+      setSelectedProfessional(null);
       fetchData();
     } catch (error) {
       console.error("Error deleting:", error);
@@ -194,7 +213,8 @@ const AdminModeration = () => {
 
       if (error) throw error;
 
-      toast({ title: "Review approved", description: "The review is now visible to users." });
+      toast({ title: "Review approved", description: "Now visible on the public website." });
+      setSelectedReview(null);
       fetchData();
     } catch (error) {
       console.error("Error approving:", error);
@@ -214,7 +234,8 @@ const AdminModeration = () => {
 
       if (error) throw error;
 
-      toast({ title: "Review rejected", description: "The review has been rejected." });
+      toast({ title: "Review rejected", description: "Moved to rejected section." });
+      setSelectedReview(null);
       fetchData();
     } catch (error) {
       console.error("Error rejecting:", error);
@@ -234,7 +255,8 @@ const AdminModeration = () => {
 
       if (error) throw error;
 
-      toast({ title: "Review deleted", description: "The review has been permanently deleted." });
+      toast({ title: "Review deleted", description: "Permanently removed." });
+      setSelectedReview(null);
       fetchData();
     } catch (error) {
       console.error("Error deleting:", error);
@@ -244,7 +266,7 @@ const AdminModeration = () => {
     }
   };
 
-  const openEditProfessional = (prof: PendingProfessional) => {
+  const openEditProfessional = (prof: Professional) => {
     setEditingProfessional(prof);
     setEditForm({
       name: prof.name,
@@ -254,7 +276,7 @@ const AdminModeration = () => {
     });
   };
 
-  const openEditReview = (review: PendingReview) => {
+  const openEditReview = (review: Review) => {
     setEditingReview(review);
     setEditForm({
       name: "",
@@ -312,6 +334,34 @@ const AdminModeration = () => {
     }
   };
 
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "pending":
+        return <Badge variant="outline" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">Pending</Badge>;
+      case "approved":
+        return <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/20">Approved</Badge>;
+      case "rejected":
+        return <Badge variant="outline" className="bg-red-500/10 text-red-600 border-red-500/20">Rejected</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  };
+
+  const truncateText = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + "...";
+  };
+
   if (loading || authLoading || adminLoading) {
     return (
       <div className="min-h-screen bg-background">
@@ -331,300 +381,539 @@ const AdminModeration = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="container py-12">
-        <div className="space-y-8">
-          <div>
-            <h1 className="text-4xl font-bold">Content Moderation</h1>
-            <p className="text-muted-foreground mt-2">
-              Review and approve submitted professors and reviews
-            </p>
+      <main className="container py-8">
+        <div className="space-y-6">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Link to="/admin">
+                <Button variant="ghost" size="icon">
+                  <ArrowLeft className="h-5 w-5" />
+                </Button>
+              </Link>
+              <div>
+                <h1 className="text-3xl font-bold">Content Moderation</h1>
+                <p className="text-muted-foreground">
+                  Review, approve, or reject submissions
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Stats Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <Clock className="h-4 w-4 text-yellow-500" />
-                  Pending Professors
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{pendingProfessionals.length}</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            <Card className="border-yellow-500/20 bg-yellow-500/5">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-yellow-600" />
+                  <span className="text-sm font-medium">Pending</span>
+                </div>
+                <div className="mt-2 flex items-baseline gap-2">
+                  <span className="text-2xl font-bold">{pendingProfessionals.length + pendingReviews.length}</span>
+                  <span className="text-xs text-muted-foreground">total</span>
+                </div>
               </CardContent>
             </Card>
             <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <Clock className="h-4 w-4 text-yellow-500" />
-                  Pending Reviews
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{pendingReviews.length}</div>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2">
+                  <Users className="h-4 w-4 text-yellow-600" />
+                  <span className="text-sm font-medium">Professors</span>
+                </div>
+                <div className="mt-2">
+                  <span className="text-2xl font-bold">{pendingProfessionals.length}</span>
+                </div>
               </CardContent>
             </Card>
             <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
-                  Approved Professors
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{approvedProfessionals.length}</div>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-yellow-600" />
+                  <span className="text-sm font-medium">Reviews</span>
+                </div>
+                <div className="mt-2">
+                  <span className="text-2xl font-bold">{pendingReviews.length}</span>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="border-green-500/20 bg-green-500/5">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <span className="text-sm font-medium">Approved</span>
+                </div>
+                <div className="mt-2">
+                  <span className="text-2xl font-bold">{approvedProfessionals.length + approvedReviews.length}</span>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="border-red-500/20 bg-red-500/5">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2">
+                  <XCircle className="h-4 w-4 text-red-600" />
+                  <span className="text-sm font-medium">Rejected</span>
+                </div>
+                <div className="mt-2">
+                  <span className="text-2xl font-bold">{rejectedProfessionals.length + rejectedReviews.length}</span>
+                </div>
               </CardContent>
             </Card>
             <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
-                  Approved Reviews
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{approvedReviews.length}</div>
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2">
+                  <Archive className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">Total</span>
+                </div>
+                <div className="mt-2">
+                  <span className="text-2xl font-bold">{professionals.length + reviews.length}</span>
+                </div>
               </CardContent>
             </Card>
           </div>
 
-          <Tabs defaultValue="pending-professors" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="pending-professors" className="flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                Pending Professors
-                {pendingProfessionals.length > 0 && (
-                  <Badge variant="destructive" className="ml-1">{pendingProfessionals.length}</Badge>
+          <Tabs defaultValue="pending" className="space-y-4">
+            <TabsList className="w-full justify-start">
+              <TabsTrigger value="pending" className="gap-2">
+                <Clock className="h-4 w-4" />
+                Pending
+                {(pendingProfessionals.length + pendingReviews.length) > 0 && (
+                  <Badge variant="destructive" className="ml-1 h-5 px-1.5">
+                    {pendingProfessionals.length + pendingReviews.length}
+                  </Badge>
                 )}
               </TabsTrigger>
-              <TabsTrigger value="pending-reviews" className="flex items-center gap-2">
-                <FileText className="h-4 w-4" />
-                Pending Reviews
-                {pendingReviews.length > 0 && (
-                  <Badge variant="destructive" className="ml-1">{pendingReviews.length}</Badge>
-                )}
+              <TabsTrigger value="approved" className="gap-2">
+                <CheckCircle className="h-4 w-4" />
+                Approved
               </TabsTrigger>
-              <TabsTrigger value="approved-professors">
-                <CheckCircle className="h-4 w-4 mr-2" />
-                Approved Professors
-              </TabsTrigger>
-              <TabsTrigger value="approved-reviews">
-                <CheckCircle className="h-4 w-4 mr-2" />
-                Approved Reviews
+              <TabsTrigger value="rejected" className="gap-2">
+                <XCircle className="h-4 w-4" />
+                Rejected
               </TabsTrigger>
             </TabsList>
 
-            {/* Pending Professors */}
-            <TabsContent value="pending-professors">
+            {/* Pending Tab */}
+            <TabsContent value="pending" className="space-y-6">
+              {/* Pending Professors */}
               <Card>
-                <CardHeader>
-                  <CardTitle>Pending Professor Submissions</CardTitle>
-                  <CardDescription>Review and approve new professor profiles</CardDescription>
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <Users className="h-5 w-5" />
+                        Pending Professors
+                      </CardTitle>
+                      <CardDescription>New professor submissions awaiting review</CardDescription>
+                    </div>
+                    {pendingProfessionals.length > 0 && (
+                      <Badge variant="outline">{pendingProfessionals.length} pending</Badge>
+                    )}
+                  </div>
                 </CardHeader>
                 <CardContent>
                   {pendingProfessionals.length === 0 ? (
-                    <p className="text-muted-foreground text-center py-8">No pending professors</p>
-                  ) : (
-                    <div className="space-y-4">
-                      {pendingProfessionals.map((prof) => (
-                        <div key={prof.id} className="border rounded-lg p-4 flex items-center justify-between">
-                          <div>
-                            <h3 className="font-semibold">{prof.name}</h3>
-                            <p className="text-sm text-muted-foreground">
-                              {prof.university} {prof.department && `• ${prof.department}`}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              Submitted: {new Date(prof.created_at).toLocaleDateString()}
-                            </p>
-                          </div>
-                          <div className="flex gap-2">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => openEditProfessional(prof)}
-                              disabled={isSubmitting}
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="default"
-                              onClick={() => handleApproveProfessional(prof.id)}
-                              disabled={isSubmitting}
-                            >
-                              <Check className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              onClick={() => handleRejectProfessional(prof.id)}
-                              disabled={isSubmitting}
-                            >
-                              <X className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
+                    <div className="text-center py-8 text-muted-foreground">
+                      <CheckCircle className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                      <p>No pending professor submissions</p>
                     </div>
+                  ) : (
+                    <ScrollArea className="h-[300px]">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Name</TableHead>
+                            <TableHead>University</TableHead>
+                            <TableHead>Department</TableHead>
+                            <TableHead>Submitted</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {pendingProfessionals.map((prof) => (
+                            <TableRow key={prof.id} className="cursor-pointer hover:bg-muted/50">
+                              <TableCell className="font-medium">{prof.name}</TableCell>
+                              <TableCell>{prof.university}</TableCell>
+                              <TableCell>{prof.department || "-"}</TableCell>
+                              <TableCell className="text-muted-foreground text-sm">
+                                {formatDate(prof.created_at)}
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex items-center justify-end gap-1">
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => setSelectedProfessional(prof)}
+                                  >
+                                    <Eye className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                                    onClick={() => handleApproveProfessional(prof.id)}
+                                    disabled={isSubmitting}
+                                  >
+                                    <Check className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                    onClick={() => handleRejectProfessional(prof.id)}
+                                    disabled={isSubmitting}
+                                  >
+                                    <X className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </ScrollArea>
                   )}
                 </CardContent>
               </Card>
-            </TabsContent>
 
-            {/* Pending Reviews */}
-            <TabsContent value="pending-reviews">
+              {/* Pending Reviews */}
               <Card>
-                <CardHeader>
-                  <CardTitle>Pending Review Submissions</CardTitle>
-                  <CardDescription>Review and approve new reviews</CardDescription>
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <FileText className="h-5 w-5" />
+                        Pending Reviews
+                      </CardTitle>
+                      <CardDescription>New reviews awaiting moderation</CardDescription>
+                    </div>
+                    {pendingReviews.length > 0 && (
+                      <Badge variant="outline">{pendingReviews.length} pending</Badge>
+                    )}
+                  </div>
                 </CardHeader>
                 <CardContent>
                   {pendingReviews.length === 0 ? (
-                    <p className="text-muted-foreground text-center py-8">No pending reviews</p>
-                  ) : (
-                    <div className="space-y-4">
-                      {pendingReviews.map((review) => (
-                        <div key={review.id} className="border rounded-lg p-4">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-2">
-                                <Badge variant="secondary">{review.professional_name}</Badge>
-                                <span className="text-sm text-muted-foreground">
-                                  Rating: {review.overall_rating}/10
-                                </span>
-                              </div>
-                              <p className="text-sm">{review.feedback}</p>
-                              <p className="text-xs text-muted-foreground mt-2">
-                                Submitted: {new Date(review.created_at).toLocaleDateString()}
-                              </p>
-                            </div>
-                            <div className="flex gap-2 ml-4">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => openEditReview(review)}
-                                disabled={isSubmitting}
-                              >
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="default"
-                                onClick={() => handleApproveReview(review.id)}
-                                disabled={isSubmitting}
-                              >
-                                <Check className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="destructive"
-                                onClick={() => handleRejectReview(review.id)}
-                                disabled={isSubmitting}
-                              >
-                                <X className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+                    <div className="text-center py-8 text-muted-foreground">
+                      <CheckCircle className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                      <p>No pending reviews</p>
                     </div>
+                  ) : (
+                    <ScrollArea className="h-[400px]">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Professor</TableHead>
+                            <TableHead>Rating</TableHead>
+                            <TableHead className="w-[300px]">Preview</TableHead>
+                            <TableHead>Submitted</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {pendingReviews.map((review) => (
+                            <TableRow key={review.id} className="cursor-pointer hover:bg-muted/50">
+                              <TableCell>
+                                <Badge variant="secondary">{review.professional_name}</Badge>
+                              </TableCell>
+                              <TableCell>
+                                <span className="font-medium">{review.overall_rating}/10</span>
+                              </TableCell>
+                              <TableCell className="text-sm text-muted-foreground">
+                                {truncateText(review.feedback, 80)}
+                              </TableCell>
+                              <TableCell className="text-muted-foreground text-sm">
+                                {formatDate(review.created_at)}
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex items-center justify-end gap-1">
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => setSelectedReview(review)}
+                                  >
+                                    <Eye className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                                    onClick={() => handleApproveReview(review.id)}
+                                    disabled={isSubmitting}
+                                  >
+                                    <Check className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                    onClick={() => handleRejectReview(review.id)}
+                                    disabled={isSubmitting}
+                                  >
+                                    <X className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </ScrollArea>
                   )}
                 </CardContent>
               </Card>
             </TabsContent>
 
-            {/* Approved Professors */}
-            <TabsContent value="approved-professors">
+            {/* Approved Tab */}
+            <TabsContent value="approved" className="space-y-6">
               <Card>
-                <CardHeader>
-                  <CardTitle>Approved Professors</CardTitle>
-                  <CardDescription>All approved and published professors</CardDescription>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Users className="h-5 w-5" />
+                    Approved Professors ({approvedProfessionals.length})
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   {approvedProfessionals.length === 0 ? (
-                    <p className="text-muted-foreground text-center py-8">No approved professors</p>
-                  ) : (
-                    <div className="space-y-4">
-                      {approvedProfessionals.map((prof) => (
-                        <div key={prof.id} className="border rounded-lg p-4 flex items-center justify-between">
-                          <div>
-                            <h3 className="font-semibold">{prof.name}</h3>
-                            <p className="text-sm text-muted-foreground">
-                              {prof.university} {prof.department && `• ${prof.department}`}
-                            </p>
-                          </div>
-                          <div className="flex gap-2">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => openEditProfessional(prof)}
-                              disabled={isSubmitting}
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              onClick={() => handleDeleteProfessional(prof.id)}
-                              disabled={isSubmitting}
-                            >
-                              <XCircle className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
+                    <div className="text-center py-8 text-muted-foreground">
+                      <p>No approved professors yet</p>
                     </div>
+                  ) : (
+                    <ScrollArea className="h-[250px]">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Name</TableHead>
+                            <TableHead>University</TableHead>
+                            <TableHead>Department</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {approvedProfessionals.map((prof) => (
+                            <TableRow key={prof.id}>
+                              <TableCell className="font-medium">{prof.name}</TableCell>
+                              <TableCell>{prof.university}</TableCell>
+                              <TableCell>{prof.department || "-"}</TableCell>
+                              <TableCell>{getStatusBadge(prof.status)}</TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex items-center justify-end gap-1">
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => openEditProfessional(prof)}
+                                  >
+                                    <Edit className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                    onClick={() => handleDeleteProfessional(prof.id)}
+                                    disabled={isSubmitting}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </ScrollArea>
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <FileText className="h-5 w-5" />
+                    Approved Reviews ({approvedReviews.length})
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {approvedReviews.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <p>No approved reviews yet</p>
+                    </div>
+                  ) : (
+                    <ScrollArea className="h-[250px]">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Professor</TableHead>
+                            <TableHead>Rating</TableHead>
+                            <TableHead className="w-[300px]">Feedback</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {approvedReviews.map((review) => (
+                            <TableRow key={review.id}>
+                              <TableCell>
+                                <Badge variant="secondary">{review.professional_name}</Badge>
+                              </TableCell>
+                              <TableCell>{review.overall_rating}/10</TableCell>
+                              <TableCell className="text-sm text-muted-foreground">
+                                {truncateText(review.feedback, 60)}
+                              </TableCell>
+                              <TableCell>{getStatusBadge(review.status)}</TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex items-center justify-end gap-1">
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => openEditReview(review)}
+                                  >
+                                    <Edit className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                    onClick={() => handleDeleteReview(review.id)}
+                                    disabled={isSubmitting}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </ScrollArea>
                   )}
                 </CardContent>
               </Card>
             </TabsContent>
 
-            {/* Approved Reviews */}
-            <TabsContent value="approved-reviews">
+            {/* Rejected Tab */}
+            <TabsContent value="rejected" className="space-y-6">
               <Card>
-                <CardHeader>
-                  <CardTitle>Approved Reviews</CardTitle>
-                  <CardDescription>All approved and published reviews</CardDescription>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Users className="h-5 w-5" />
+                    Rejected Professors ({rejectedProfessionals.length})
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {approvedReviews.length === 0 ? (
-                    <p className="text-muted-foreground text-center py-8">No approved reviews</p>
-                  ) : (
-                    <div className="space-y-4">
-                      {approvedReviews.map((review) => (
-                        <div key={review.id} className="border rounded-lg p-4">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-2">
-                                <Badge variant="secondary">{review.professional_name}</Badge>
-                                <span className="text-sm text-muted-foreground">
-                                  Rating: {review.overall_rating}/10
-                                </span>
-                              </div>
-                              <p className="text-sm">{review.feedback}</p>
-                            </div>
-                            <div className="flex gap-2 ml-4">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => openEditReview(review)}
-                                disabled={isSubmitting}
-                              >
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="destructive"
-                                onClick={() => handleDeleteReview(review.id)}
-                                disabled={isSubmitting}
-                              >
-                                <XCircle className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+                  {rejectedProfessionals.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <p>No rejected professors</p>
                     </div>
+                  ) : (
+                    <ScrollArea className="h-[250px]">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Name</TableHead>
+                            <TableHead>University</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {rejectedProfessionals.map((prof) => (
+                            <TableRow key={prof.id}>
+                              <TableCell className="font-medium">{prof.name}</TableCell>
+                              <TableCell>{prof.university}</TableCell>
+                              <TableCell>{getStatusBadge(prof.status)}</TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex items-center justify-end gap-1">
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                                    onClick={() => handleApproveProfessional(prof.id)}
+                                    disabled={isSubmitting}
+                                  >
+                                    <Check className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                    onClick={() => handleDeleteProfessional(prof.id)}
+                                    disabled={isSubmitting}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </ScrollArea>
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <FileText className="h-5 w-5" />
+                    Rejected Reviews ({rejectedReviews.length})
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {rejectedReviews.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <p>No rejected reviews</p>
+                    </div>
+                  ) : (
+                    <ScrollArea className="h-[250px]">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Professor</TableHead>
+                            <TableHead>Rating</TableHead>
+                            <TableHead className="w-[300px]">Feedback</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {rejectedReviews.map((review) => (
+                            <TableRow key={review.id}>
+                              <TableCell>
+                                <Badge variant="secondary">{review.professional_name}</Badge>
+                              </TableCell>
+                              <TableCell>{review.overall_rating}/10</TableCell>
+                              <TableCell className="text-sm text-muted-foreground">
+                                {truncateText(review.feedback, 60)}
+                              </TableCell>
+                              <TableCell>{getStatusBadge(review.status)}</TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex items-center justify-end gap-1">
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                                    onClick={() => handleApproveReview(review.id)}
+                                    disabled={isSubmitting}
+                                  >
+                                    <Check className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                    onClick={() => handleDeleteReview(review.id)}
+                                    disabled={isSubmitting}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </ScrollArea>
                   )}
                 </CardContent>
               </Card>
@@ -632,6 +921,146 @@ const AdminModeration = () => {
           </Tabs>
         </div>
       </main>
+
+      {/* Professor Detail Dialog */}
+      <Dialog open={!!selectedProfessional} onOpenChange={() => setSelectedProfessional(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Professor Details</DialogTitle>
+            <DialogDescription>Review the submission details before taking action</DialogDescription>
+          </DialogHeader>
+          {selectedProfessional && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-muted-foreground text-xs">Name</Label>
+                  <p className="font-medium">{selectedProfessional.name}</p>
+                </div>
+                <div>
+                  <Label className="text-muted-foreground text-xs">Category</Label>
+                  <p className="capitalize">{selectedProfessional.category}</p>
+                </div>
+                <div>
+                  <Label className="text-muted-foreground text-xs">University</Label>
+                  <p>{selectedProfessional.university}</p>
+                </div>
+                <div>
+                  <Label className="text-muted-foreground text-xs">Department</Label>
+                  <p>{selectedProfessional.department || "Not specified"}</p>
+                </div>
+                <div>
+                  <Label className="text-muted-foreground text-xs">Status</Label>
+                  <div className="mt-1">{getStatusBadge(selectedProfessional.status)}</div>
+                </div>
+                <div>
+                  <Label className="text-muted-foreground text-xs">Submitted</Label>
+                  <p className="text-sm">{formatDate(selectedProfessional.created_at)}</p>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => openEditProfessional(selectedProfessional!)}>
+              <Edit className="h-4 w-4 mr-2" />
+              Edit
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => handleRejectProfessional(selectedProfessional!.id)}
+              disabled={isSubmitting}
+            >
+              <X className="h-4 w-4 mr-2" />
+              Reject
+            </Button>
+            <Button
+              onClick={() => handleApproveProfessional(selectedProfessional!.id)}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Check className="h-4 w-4 mr-2" />}
+              Approve
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Review Detail Dialog */}
+      <Dialog open={!!selectedReview} onOpenChange={() => setSelectedReview(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Review Details</DialogTitle>
+            <DialogDescription>Full review content for moderation</DialogDescription>
+          </DialogHeader>
+          {selectedReview && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-muted-foreground text-xs">Professor</Label>
+                  <p className="font-medium">{selectedReview.professional_name}</p>
+                </div>
+                <div>
+                  <Label className="text-muted-foreground text-xs">Overall Rating</Label>
+                  <p className="font-medium">{selectedReview.overall_rating}/10</p>
+                </div>
+                <div>
+                  <Label className="text-muted-foreground text-xs">Teaching Rating</Label>
+                  <p>{selectedReview.teaching_rating}/10</p>
+                </div>
+              </div>
+              <div>
+                <Label className="text-muted-foreground text-xs">Feedback</Label>
+                <div className="mt-1 p-3 bg-muted/50 rounded-lg">
+                  <p className="text-sm whitespace-pre-wrap">{selectedReview.feedback}</p>
+                </div>
+              </div>
+              {selectedReview.tags && selectedReview.tags.length > 0 && (
+                <div>
+                  <Label className="text-muted-foreground text-xs">Tags</Label>
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {selectedReview.tags.map((tag, i) => (
+                      <Badge key={i} variant="outline">{tag}</Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <div className="grid grid-cols-3 gap-4 text-sm">
+                <div>
+                  <Label className="text-muted-foreground text-xs">Comfort Level</Label>
+                  <p>{selectedReview.comfort_level ? `${selectedReview.comfort_level}/10` : "N/A"}</p>
+                </div>
+                <div>
+                  <Label className="text-muted-foreground text-xs">Recommend</Label>
+                  <p>{selectedReview.recommend_to_friend ? "Yes" : "No"}</p>
+                </div>
+                <div>
+                  <Label className="text-muted-foreground text-xs">Submitted</Label>
+                  <p>{formatDate(selectedReview.created_at)}</p>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => openEditReview(selectedReview!)}>
+              <Edit className="h-4 w-4 mr-2" />
+              Edit
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => handleRejectReview(selectedReview!.id)}
+              disabled={isSubmitting}
+            >
+              <X className="h-4 w-4 mr-2" />
+              Reject
+            </Button>
+            <Button
+              onClick={() => handleApproveReview(selectedReview!.id)}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Check className="h-4 w-4 mr-2" />}
+              Approve
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Edit Professor Dialog */}
       <Dialog open={!!editingProfessional} onOpenChange={() => setEditingProfessional(null)}>
@@ -687,7 +1116,7 @@ const AdminModeration = () => {
                 id="edit-feedback"
                 value={editForm.feedback}
                 onChange={(e) => setEditForm({ ...editForm, feedback: e.target.value })}
-                rows={5}
+                rows={6}
               />
             </div>
           </div>
