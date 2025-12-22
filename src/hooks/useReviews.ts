@@ -160,6 +160,11 @@ export const useReviews = (professionalId: string) => {
 
       if (error) throw error;
 
+      toast({
+        title: "Review submitted",
+        description: "Your review has been submitted for approval. An admin will review it shortly."
+      });
+
       return true;
     } catch (error: unknown) {
       console.error("Error submitting review:", error);

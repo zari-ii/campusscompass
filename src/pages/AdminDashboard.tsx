@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Users, FileText, BarChart3, Cookie, TrendingUp, Calendar, Loader2 } from "lucide-react";
+import { Users, FileText, BarChart3, Cookie, TrendingUp, Calendar, Loader2, Shield } from "lucide-react";
 
 interface AnalyticsData {
   totalUsers: number;
@@ -159,11 +160,19 @@ const AdminDashboard = () => {
       
       <main className="container py-12">
         <div className="space-y-8">
-          <div>
-            <h1 className="text-4xl font-bold">{t.adminDashboard || "Admin Dashboard"}</h1>
-            <p className="text-muted-foreground mt-2">
-              {t.adminDashboardDesc || "Overview of platform analytics and user data"}
-            </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-4xl font-bold">{t.adminDashboard || "Admin Dashboard"}</h1>
+              <p className="text-muted-foreground mt-2">
+                {t.adminDashboardDesc || "Overview of platform analytics and user data"}
+              </p>
+            </div>
+            <Link to="/admin/moderation">
+              <Button className="gap-2">
+                <Shield className="h-4 w-4" />
+                Content Moderation
+              </Button>
+            </Link>
           </div>
 
           {/* Overview Cards */}

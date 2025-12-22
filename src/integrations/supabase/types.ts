@@ -22,6 +22,7 @@ export type Database = {
           department: string | null
           id: string
           name: string
+          status: string
           university: string
           updated_at: string
         }
@@ -32,6 +33,7 @@ export type Database = {
           department?: string | null
           id?: string
           name: string
+          status?: string
           university: string
           updated_at?: string
         }
@@ -42,6 +44,7 @@ export type Database = {
           department?: string | null
           id?: string
           name?: string
+          status?: string
           university?: string
           updated_at?: string
         }
@@ -88,6 +91,7 @@ export type Database = {
           overall_rating: number
           professional_id: string
           recommend_to_friend: boolean | null
+          status: string
           tags: string[] | null
           teaching_rating: number
           updated_at: string
@@ -104,6 +108,7 @@ export type Database = {
           overall_rating: number
           professional_id: string
           recommend_to_friend?: boolean | null
+          status?: string
           tags?: string[] | null
           teaching_rating: number
           updated_at?: string
@@ -120,6 +125,7 @@ export type Database = {
           overall_rating?: number
           professional_id?: string
           recommend_to_friend?: boolean | null
+          status?: string
           tags?: string[] | null
           teaching_rating?: number
           updated_at?: string

@@ -16,10 +16,13 @@ export const useProfessionals = (category: string = "professor") => {
 
   const fetchProfessionals = async () => {
     try {
+      // Only fetch approved professionals for public display
+      // RLS handles this, but we also filter explicitly for clarity
       const { data, error } = await supabase
         .from("professionals")
         .select("*")
         .eq("category", category)
+        .eq("status", "approved")
         .order("name", { ascending: true });
 
       if (error) throw error;

@@ -13,6 +13,7 @@ import ProfessorDetail from "./pages/ProfessorDetail";
 import Auth from "./pages/Auth";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminModeration from "./pages/AdminModeration";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/admin/moderation" element={<AdminModeration />} />
                 <Route path="/professors" element={<Professors />} />
                 <Route path="/psychologists" element={<Professors />} />
                 <Route path="/tutors" element={<Professors />} />
