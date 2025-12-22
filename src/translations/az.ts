@@ -38,6 +38,7 @@ export const az = {
   yourFeedback: "Sizin Rəyiniz",
   feedbackPlaceholder: "Bu müəllimlə bağlı təcrübənizi paylaşın...",
   tags: "Teqlər",
+  addCustomTag: "Xüsusi teq əlavə et...",
   submitReviewButton: "Rəy Göndər",
   back: "Geri",
   

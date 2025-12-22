@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { ProfessorCard } from "@/components/ProfessorCard";
@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Plus, ArrowLeft } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useReviewStats } from "@/hooks/useReviewStats";
 
 const Professors = () => {
   const navigate = useNavigate();
@@ -191,6 +192,10 @@ const Professors = () => {
   };
 
   const professors = getMockData();
+  
+  // Get all professor IDs for fetching review stats
+  const professorIds = useMemo(() => professors.map(p => p.id), [professors]);
+  const { stats } = useReviewStats(professorIds);
 
   const filteredProfessors = professors.filter(prof =>
     prof.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -240,18 +245,24 @@ const Professors = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProfessors.map((professor) => (
-              <ProfessorCard 
-                key={professor.id} 
-                {...professor}
-                category={
-                  location.pathname === "/psychologists" ? "psychologist" :
-                  location.pathname === "/tutors" ? "tutor" :
-                  location.pathname === "/courses" ? "course" :
-                  "professor"
-                }
-              />
-            ))}
+            {filteredProfessors.map((professor) => {
+              const reviewStats = stats.get(professor.id);
+              return (
+                <ProfessorCard 
+                  key={professor.id} 
+                  {...professor}
+                  rating={reviewStats?.avgRating || professor.rating}
+                  teachingScore={reviewStats?.avgTeaching || professor.teachingScore}
+                  reviewCount={reviewStats?.reviewCount || 0}
+                  category={
+                    location.pathname === "/psychologists" ? "psychologist" :
+                    location.pathname === "/tutors" ? "tutor" :
+                    location.pathname === "/courses" ? "course" :
+                    "professor"
+                  }
+                />
+              );
+            })}
           </div>
 
           {filteredProfessors.length === 0 && (

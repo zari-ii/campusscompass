@@ -38,6 +38,7 @@ export const ru = {
   yourFeedback: "Ваш Отзыв",
   feedbackPlaceholder: "Поделитесь вашим опытом с этим преподавателем...",
   tags: "Теги",
+  addCustomTag: "Добавить свой тег...",
   submitReviewButton: "Отправить Отзыв",
   back: "Назад",
   
