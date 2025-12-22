@@ -5,12 +5,13 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Camera, Loader2 } from "lucide-react";
+import { Camera, Loader2, EyeOff } from "lucide-react";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -18,8 +19,10 @@ const Profile = () => {
   const { t } = useLanguage();
   const { user, loading: authLoading } = useAuth();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [isAnonymous, setIsAnonymous] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [savingAnonymity, setSavingAnonymity] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -37,16 +40,38 @@ const Profile = () => {
     try {
       const { data, error } = await supabase
         .from("profiles")
-        .select("avatar_url")
+        .select("avatar_url, is_anonymous")
         .eq("user_id", user!.id)
         .single();
 
       if (error) throw error;
       setAvatarUrl(data?.avatar_url || null);
+      setIsAnonymous(data?.is_anonymous || false);
     } catch (error) {
       console.error("Error fetching profile:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const toggleAnonymity = async (value: boolean) => {
+    setSavingAnonymity(true);
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ is_anonymous: value })
+        .eq("user_id", user!.id);
+
+      if (error) throw error;
+      setIsAnonymous(value);
+      toast({ 
+        title: t.profileUpdated, 
+        description: value ? t.anonymityEnabled : t.anonymityDisabled 
+      });
+    } catch (error: any) {
+      toast({ title: t.error, description: error.message, variant: "destructive" });
+    } finally {
+      setSavingAnonymity(false);
     }
   };
 
@@ -155,7 +180,7 @@ const Profile = () => {
               <p className="text-sm text-muted-foreground mt-2">{t.clickToChangeAvatar}</p>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-6">
               <div className="space-y-2">
                 <Label>{t.username}</Label>
                 <Input
@@ -169,6 +194,21 @@ const Profile = () => {
               <div className="space-y-2">
                 <Label>{t.universityEmail}</Label>
                 <Input value={user.email || ""} disabled className="bg-muted" />
+              </div>
+
+              <div className="flex items-center justify-between p-4 rounded-lg border bg-muted/50">
+                <div className="flex items-center gap-3">
+                  <EyeOff className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <Label className="text-base">{t.anonymousMode}</Label>
+                    <p className="text-sm text-muted-foreground">{t.anonymousModeDescription}</p>
+                  </div>
+                </div>
+                <Switch
+                  checked={isAnonymous}
+                  onCheckedChange={toggleAnonymity}
+                  disabled={savingAnonymity}
+                />
               </div>
             </div>
 

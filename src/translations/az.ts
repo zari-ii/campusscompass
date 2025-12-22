@@ -253,6 +253,13 @@ export const az = {
   usernameCannotBeChanged: "Hesab yaradıldıqdan sonra istifadəçi adı dəyişdirilə bilməz.",
   usernameWarning: "⚠️ Xəbərdarlıq: İstifadəçi adları yaradıldıqdan sonra dəyişdirilə bilməz. Diqqətlə seçin.",
   error: "Xəta",
+  anonymousMode: "Anonim rejim",
+  anonymousModeDescription: "Rəylərdə istifadəçi adınızı gizlədin və 'Anonim' olaraq görünün",
+  anonymityEnabled: "Rəyləriniz indi Anonim olaraq görünəcək",
+  anonymityDisabled: "İstifadəçi adınız artıq rəylərdə görünəcək",
+  anonymous: "Anonim",
+  emailVerificationRequired: "Zəhmət olmasa giriş etməzdən əvvəl hesabınızı təsdiqləmək üçün e-poçtunuzu yoxlayın.",
+  emailVerificationSent: "Təsdiq e-poçtu göndərildi! Zəhmət olmasa gələnlər qutunuzu yoxlayın.",
   
   // Notifications
   notifications: "Bildirişlər",

@@ -70,7 +70,7 @@ const Auth = () => {
           return;
         }
 
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email: email.trim(),
           password,
           options: {
@@ -81,6 +81,9 @@ const Auth = () => {
 
         if (error) {
           toast({ title: t.authError, description: error.message.includes("already registered") ? t.userAlreadyExists : error.message, variant: "destructive" });
+        } else if (data.user && !data.session) {
+          // Email confirmation required
+          toast({ title: t.emailVerificationSent, description: t.emailVerificationRequired });
         } else {
           toast({ title: t.signUpSuccess, description: t.signUpSuccessMessage });
           setShowSurvey(true);
