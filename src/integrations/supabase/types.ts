@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      professionals: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string | null
+          department: string | null
+          id: string
+          name: string
+          university: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          department?: string | null
+          id?: string
+          name: string
+          university: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          department?: string | null
+          id?: string
+          name?: string
+          university?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
