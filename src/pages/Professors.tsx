@@ -146,36 +146,46 @@ const Professors = () => {
         ];
       default: // professors
         return [
-          {
-            id: "1",
-            name: "Dr. Sarah Johnson",
-            department: "Computer Science",
-            university: "State University",
-            rating: 8.5,
-            teachingScore: 4.5,
-            courses: ["CS101", "CS201", "CS301"],
-            tags: ["Clear explanations", "Fair grading", "Helpful"]
-          },
-          {
-            id: "2",
-            name: "Prof. Michael Chen",
-            department: "Mathematics",
-            university: "Tech Institute",
-            rating: 7.2,
-            teachingScore: 3.5,
-            courses: ["MATH150", "MATH250"],
-            tags: ["Challenging", "Research-focused"]
-          },
-          {
-            id: "3",
-            name: "Dr. Emily Rodriguez",
-            department: "Biology",
-            university: "State University",
-            rating: 9.1,
-            teachingScore: 5,
-            courses: ["BIO101", "BIO201", "BIO301", "BIO401"],
-            tags: ["Passionate", "Engaging lectures", "Extra help"]
-          }
+          // SPIA
+          { id: "1", name: "Orkhan Nadirov", department: "SPIA", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "2", name: "Ferit Murat Ozkaleli", department: "SPIA", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "3", name: "Kavus Abushov", department: "SPIA", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "4", name: "Sarvar Gurbanov", department: "SPIA", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "5", name: "Ali Saqer", department: "SPIA", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          // BBA
+          { id: "6", name: "Elkin Nurmammadov", department: "BBA", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "7", name: "Azra Brankovic", department: "BBA", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "8", name: "Hulisi Ogut", department: "BBA", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "9", name: "Narmina Rustamova", department: "BBA", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "10", name: "Farid Gadirli", department: "BBA", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          // SITE
+          { id: "11", name: "Samir Rustamov", department: "SITE", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "12", name: "Araz Yusubov", department: "SITE", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "13", name: "Fuad Hajiyev", department: "SITE", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "14", name: "Burcu Ramazanli", department: "SITE", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "15", name: "Azar Aliyev", department: "SITE", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          // EDUCATION
+          { id: "16", name: "Vafa Kazdal", department: "Education", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "17", name: "Ulker Ibrahimova", department: "Education", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "18", name: "Samira Hajiyeva", department: "Education", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          // LLB
+          { id: "19", name: "Azad Talibov", department: "LLB", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "20", name: "Kamala Nazarova", department: "LLB", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "21", name: "Emin Karimov", department: "LLB", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "22", name: "Juan Rodrigo Labardini Flores", department: "LLB", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "23", name: "Aynur Akhundli", department: "LLB", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          // SAFS
+          { id: "24", name: "Saida Aliyeva", department: "SAFS", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "25", name: "Matilde Tura", department: "SAFS", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "26", name: "Asaf Omarov", department: "SAFS", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "27", name: "Giacomo Zanello", department: "SAFS", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "28", name: "Marcello Russ", department: "SAFS", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          // SDA
+          { id: "29", name: "Marco Bovati", department: "SDA", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "30", name: "Emir Huseynov", department: "SDA", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "31", name: "Stefania Sini", department: "SDA", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "32", name: "Deniz Ozge Aytac", department: "SDA", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "33", name: "Carl Haddrell", department: "SDA", university: "ADA University", rating: 0, teachingScore: 0, courses: [], tags: [] },
         ];
     }
   };
