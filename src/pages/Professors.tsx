@@ -4,9 +4,11 @@ import { Header } from "@/components/Header";
 import { ProfessorCard } from "@/components/ProfessorCard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Plus, ArrowLeft } from "lucide-react";
+import { Search, ArrowLeft } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useReviewStats } from "@/hooks/useReviewStats";
+import { useProfessionals } from "@/hooks/useProfessionals";
+import { AddProfessorDialog } from "@/components/AddProfessorDialog";
 
 const Professors = () => {
   const navigate = useNavigate();
@@ -14,136 +16,35 @@ const Professors = () => {
   const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
 
-  const getMockData = () => {
+  const category = location.pathname === "/psychologists" ? "psychologist" :
+                   location.pathname === "/tutors" ? "tutor" :
+                   location.pathname === "/courses" ? "course" : "professor";
+
+  // Fetch professors from database
+  const { professionals: dbProfessionals, refetch } = useProfessionals(category);
+
+  const getSeedData = () => {
     switch (location.pathname) {
       case "/psychologists":
         return [
-          {
-            id: "p1",
-            name: "Dr. Sarah Martinez",
-            department: "Clinical Psychology",
-            university: "University Counseling Center",
-            rating: 9.4,
-            teachingScore: 4.9,
-            courses: ["Anxiety & Depression", "Trauma-Informed Care"],
-            tags: ["Active listener", "LGBTQ+ inclusive", "Culturally sensitive"]
-          },
-          {
-            id: "p2",
-            name: "Dr. James Thompson",
-            department: "Cognitive Behavioral Therapy",
-            university: "Wellness Clinic",
-            rating: 9.1,
-            teachingScore: 4.7,
-            courses: ["Stress Management", "CBT Techniques"],
-            tags: ["Evidence-based approach", "Friendly and empathetic", "Crisis support experience"]
-          },
-          {
-            id: "p3",
-            name: "Dr. Aisha Patel",
-            department: "Family Therapy",
-            university: "Community Mental Health Center",
-            rating: 9.3,
-            teachingScore: 4.8,
-            courses: ["Relationship Counseling", "Family Dynamics"],
-            tags: ["Confidential & trustworthy", "Culturally sensitive", "Flexible scheduling"]
-          },
-          {
-            id: "p4",
-            name: "Dr. Michael Chen",
-            department: "Child & Adolescent Psychology",
-            university: "University Counseling Center",
-            rating: 9.0,
-            teachingScore: 4.6,
-            courses: ["Teen Mental Health", "Developmental Psychology"],
-            tags: ["Friendly and empathetic", "Stress/anxiety support", "Active listener"]
-          }
+          { id: "p1", name: "Dr. Sarah Martinez", department: "Clinical Psychology", university: "University Counseling Center", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "p2", name: "Dr. James Thompson", department: "Cognitive Behavioral Therapy", university: "Wellness Clinic", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "p3", name: "Dr. Aisha Patel", department: "Family Therapy", university: "Community Mental Health Center", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "p4", name: "Dr. Michael Chen", department: "Child & Adolescent Psychology", university: "University Counseling Center", rating: 0, teachingScore: 0, courses: [], tags: [] }
         ];
       case "/tutors":
         return [
-          {
-            id: "t1",
-            name: "Aysel Məmmədova",
-            department: "İngilis dili",
-            university: "Baratson Academy",
-            rating: 9.3,
-            teachingScore: 4.9,
-            courses: ["IELTS", "TOEFL", "SAT"],
-            tags: ["Interaktiv", "Nəticə yönümlü", "Səbirli"]
-          },
-          {
-            id: "t2",
-            name: "Kamran Əhmədov",
-            department: "Riyaziyyat",
-            university: "Hədəf Təhsil Mərkəzi",
-            rating: 9.0,
-            teachingScore: 4.7,
-            courses: ["DİM hazırlığı", "Abituriyent", "SAT Math"],
-            tags: ["Aydın izahat", "Çoxlu məşq", "Keyfiyyətli"]
-          },
-          {
-            id: "t3",
-            name: "Səbinə Həsənova",
-            department: "Azərbaycan dili",
-            university: "Abituriyent Mərkəzi",
-            rating: 8.7,
-            teachingScore: 4.4,
-            courses: ["DİM", "Ədəbiyyat", "Qrammatika"],
-            tags: ["Səbirli", "İlhamverici", "Dəstəkləyici"]
-          },
-          {
-            id: "t4",
-            name: "Elvin Məmmədov",
-            department: "Fizika",
-            university: "İntelekt Mərkəzi",
-            rating: 9.1,
-            teachingScore: 4.8,
-            courses: ["DİM Fizika", "Abituriyent", "Olimpiada"],
-            tags: ["Çətin tapşırıqlar", "Əla izahat", "Peşəkar"]
-          }
+          { id: "t1", name: "Aysel Məmmədova", department: "İngilis dili", university: "Baratson Academy", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "t2", name: "Kamran Əhmədov", department: "Riyaziyyat", university: "Hədəf Təhsil Mərkəzi", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "t3", name: "Səbinə Həsənova", department: "Azərbaycan dili", university: "Abituriyent Mərkəzi", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "t4", name: "Elvin Məmmədov", department: "Fizika", university: "İntelekt Mərkəzi", rating: 0, teachingScore: 0, courses: [], tags: [] }
         ];
       case "/courses":
         return [
-          {
-            id: "c1",
-            name: "DİM Hazırlıq Kursu",
-            department: "Ümumi Hazırlıq",
-            university: "Baratson Academy",
-            rating: 9.2,
-            teachingScore: 4.9,
-            courses: ["Riyaziyyat", "Azərbaycan dili", "İngilis dili"],
-            tags: ["İntensiv", "Yüksək nəticə", "Təcrübəli müəllimlər"]
-          },
-          {
-            id: "c2",
-            name: "SAT Hazırlıq Proqramı",
-            department: "Beynəlxalq İmtahan",
-            university: "Hədəf Təhsil Mərkəzi",
-            rating: 9.4,
-            teachingScore: 5.0,
-            courses: ["SAT Math", "SAT Reading", "SAT Writing"],
-            tags: ["Yüksək ballar", "Peşəkar", "Dəstəkləyici"]
-          },
-          {
-            id: "c3",
-            name: "IELTS Hazırlıq Kursu",
-            department: "İngilis dili",
-            university: "Baratson Academy",
-            rating: 9.0,
-            teachingScore: 4.7,
-            courses: ["Speaking", "Writing", "Reading", "Listening"],
-            tags: ["Band 7+", "İnteraktiv", "Mock imtahanlar"]
-          },
-          {
-            id: "c4",
-            name: "Magistratura Hazırlığı",
-            department: "Akademik",
-            university: "İntelekt Mərkəzi",
-            rating: 8.8,
-            teachingScore: 4.5,
-            courses: ["Xarici dil", "İxtisas fənni", "Test strategiyaları"],
-            tags: ["Hərtərəfli", "Nəticə yönümlü", "Uğurlu keçid"]
-          }
+          { id: "c1", name: "DİM Hazırlıq Kursu", department: "Ümumi Hazırlıq", university: "Baratson Academy", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "c2", name: "SAT Hazırlıq Proqramı", department: "Beynəlxalq İmtahan", university: "Hədəf Təhsil Mərkəzi", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "c3", name: "IELTS Hazırlıq Kursu", department: "İngilis dili", university: "Baratson Academy", rating: 0, teachingScore: 0, courses: [], tags: [] },
+          { id: "c4", name: "Magistratura Hazırlığı", department: "Akademik", university: "İntelekt Mərkəzi", rating: 0, teachingScore: 0, courses: [], tags: [] }
         ];
       default: // professors
         return [
@@ -191,13 +92,27 @@ const Professors = () => {
     }
   };
 
-  const professors = getMockData();
+  // Combine seed data with database professionals
+  const allProfessors = useMemo(() => {
+    const seedData = getSeedData();
+    const dbData = dbProfessionals.map(p => ({
+      id: p.id,
+      name: p.name,
+      department: p.department || "",
+      university: p.university,
+      rating: 0,
+      teachingScore: 0,
+      courses: [] as string[],
+      tags: [] as string[]
+    }));
+    return [...seedData, ...dbData];
+  }, [dbProfessionals, location.pathname]);
   
   // Get all professor IDs for fetching review stats
-  const professorIds = useMemo(() => professors.map(p => p.id), [professors]);
+  const professorIds = useMemo(() => allProfessors.map(p => p.id), [allProfessors]);
   const { stats } = useReviewStats(professorIds);
 
-  const filteredProfessors = professors.filter(prof =>
+  const filteredProfessors = allProfessors.filter(prof =>
     prof.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     prof.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
     prof.university.toLowerCase().includes(searchQuery.toLowerCase())
@@ -207,12 +122,12 @@ const Professors = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="container py-12">
-        <div className="max-w-6xl mx-auto space-y-8">
+      <main className="container py-6 md:py-12">
+        <div className="max-w-6xl mx-auto space-y-6 md:space-y-8">
           <Button
             variant="ghost"
             onClick={() => navigate(-1)}
-            className="gap-2 mb-4"
+            className="gap-2 -ml-2"
           >
             <ArrowLeft className="w-4 h-4" />
             {t.back}
@@ -220,7 +135,7 @@ const Professors = () => {
           
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
-              <h1 className="text-4xl font-bold mb-2">
+              <h1 className="text-3xl md:text-4xl font-bold mb-2">
                 {location.pathname === "/psychologists" && t.psychologists}
                 {location.pathname === "/tutors" && t.tutorsCoaches}
                 {location.pathname === "/courses" && t.courses}
@@ -228,10 +143,7 @@ const Professors = () => {
               </h1>
               <p className="text-muted-foreground">{t.findAndRate}</p>
             </div>
-            <Button className="gap-2">
-              <Plus className="w-4 h-4" />
-              {t.addProfessor}
-            </Button>
+            <AddProfessorDialog category={category} onSuccess={refetch} />
           </div>
 
           <div className="relative">
@@ -254,12 +166,7 @@ const Professors = () => {
                   rating={reviewStats?.avgRating || professor.rating}
                   teachingScore={reviewStats?.avgTeaching || professor.teachingScore}
                   reviewCount={reviewStats?.reviewCount || 0}
-                  category={
-                    location.pathname === "/psychologists" ? "psychologist" :
-                    location.pathname === "/tutors" ? "tutor" :
-                    location.pathname === "/courses" ? "course" :
-                    "professor"
-                  }
+                  category={category}
                 />
               );
             })}
