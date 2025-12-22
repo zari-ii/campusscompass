@@ -92,13 +92,21 @@ const ProfessorDetail = () => {
 
   const currentProfessor = professorData[id || "1"] || { name: "Unknown", department: "Unknown", university: "ADA University" };
 
+  // Calculate dynamic ratings from reviews
+  const calculatedRating = reviews.length > 0 
+    ? reviews.reduce((sum, r) => sum + r.overall_rating, 0) / reviews.length 
+    : 0;
+  const calculatedTeaching = reviews.length > 0 
+    ? reviews.reduce((sum, r) => sum + r.teaching_rating, 0) / reviews.length 
+    : 0;
+
   const professor = {
     id: id || "1",
     name: currentProfessor.name,
     department: currentProfessor.department,
     university: currentProfessor.university,
-    rating: 0,
-    teachingScore: 0,
+    rating: calculatedRating,
+    teachingScore: calculatedTeaching,
     totalReviews: reviews.length
   };
 
