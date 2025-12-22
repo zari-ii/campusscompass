@@ -282,6 +282,15 @@ export type Database = {
       }
     }
     Functions: {
+      get_public_profiles: {
+        Args: { user_ids: string[] }
+        Returns: {
+          is_anonymous: boolean
+          is_verified: boolean
+          user_id: string
+          username: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

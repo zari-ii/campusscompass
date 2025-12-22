@@ -44,7 +44,7 @@ interface ReviewWithProfile {
   created_at: string;
   profile: {
     username: string;
-    university_email: string | null;
+    is_verified: boolean;
     is_anonymous: boolean;
   } | null;
 }
@@ -113,7 +113,7 @@ export const ReviewCard = ({
             <p className="font-semibold">
               {review.profile?.is_anonymous ? t.anonymous : (review.profile?.username || t.anonymous)}
             </p>
-            {!review.profile?.is_anonymous && review.profile?.university_email && (
+            {!review.profile?.is_anonymous && review.profile?.is_verified && (
               <UserBadge type="verified_student" />
             )}
           </div>

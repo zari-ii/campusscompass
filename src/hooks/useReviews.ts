@@ -25,7 +25,7 @@ interface ReviewWithProfile {
   created_at: string;
   profile: {
     username: string;
-    university_email: string | null;
+    is_verified: boolean;
     is_anonymous: boolean;
   } | null;
 }
@@ -87,15 +87,16 @@ export const useReviews = (professionalId: string) => {
         return;
       }
 
-      // Fetch profiles for review authors
+      // Fetch profiles for review authors using secure function
       const userIds = [...new Set(reviewsData.map(r => r.user_id))];
       const { data: profilesData } = await supabase
-        .from("profiles")
-        .select("user_id, username, university_email, is_anonymous")
-        .in("user_id", userIds);
+        .rpc("get_public_profiles", { user_ids: userIds });
 
       const profilesMap = new Map(
-        profilesData?.map(p => [p.user_id, { username: p.username, university_email: p.university_email, is_anonymous: p.is_anonymous }]) || []
+        profilesData?.map((p: { user_id: string; username: string; is_anonymous: boolean; is_verified: boolean }) => [
+          p.user_id, 
+          { username: p.username, is_anonymous: p.is_anonymous, is_verified: p.is_verified }
+        ]) || []
       );
 
       const reviewsWithProfiles: ReviewWithProfile[] = reviewsData.map(review => ({
