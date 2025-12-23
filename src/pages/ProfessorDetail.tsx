@@ -338,7 +338,7 @@ const ProfessorDetail = () => {
                     )}>
                       {professor.teachingStyle.label}
                     </div>
-                    <div className="text-xs text-muted-foreground mt-1">{getTeachingLabel()}</div>
+                    
                   </div>
                 )}
               </div>
