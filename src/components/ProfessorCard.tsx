@@ -57,32 +57,6 @@ export const ProfessorCard = ({
   const [isDeleting, setIsDeleting] = useState(false);
 
   const showAdminControls = isAdmin && !viewAsUser;
-  const getUniversityLabel = () => {
-    switch (category) {
-      case "psychologist": return "Workplace";
-      case "tutor": return "Educational Center";
-      case "course": return "Provider";
-      default: return "University";
-    }
-  };
-
-  const getCoursesLabel = () => {
-    switch (category) {
-      case "psychologist": return "Specialties";
-      case "tutor": return "Subjects";
-      case "course": return "Modules";
-      default: return "Courses";
-    }
-  };
-
-  const getTeachingLabel = () => {
-    switch (category) {
-      case "psychologist": return "Approach";
-      case "tutor": return "Teaching";
-      case "course": return "Quality";
-      default: return "Teaching Style";
-    }
-  };
 
   const getRatingColor = (rating: number) => {
     if (rating >= 9) return "text-rating-excellent";
