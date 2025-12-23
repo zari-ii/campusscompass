@@ -57,6 +57,32 @@ export const ProfessorCard = ({
   const [isDeleting, setIsDeleting] = useState(false);
 
   const showAdminControls = isAdmin && !viewAsUser;
+  const getUniversityLabel = () => {
+    switch (category) {
+      case "psychologist": return "Workplace";
+      case "tutor": return "Educational Center";
+      case "course": return "Provider";
+      default: return "University";
+    }
+  };
+
+  const getCoursesLabel = () => {
+    switch (category) {
+      case "psychologist": return "Specialties";
+      case "tutor": return "Subjects";
+      case "course": return "Modules";
+      default: return "Courses";
+    }
+  };
+
+  const getTeachingLabel = () => {
+    switch (category) {
+      case "psychologist": return "Approach";
+      case "tutor": return "Teaching";
+      case "course": return "Quality";
+      default: return "Teaching Style";
+    }
+  };
 
   const getRatingColor = (rating: number) => {
     if (rating >= 9) return "text-rating-excellent";
@@ -168,7 +194,8 @@ export const ProfessorCard = ({
           </div>
           
           <div className="space-y-2">
-            <div className="flex items-center justify-end text-sm">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">{getTeachingLabel()}</span>
               <div className="flex items-center gap-2">
                 {teachingStyleLabel && teachingScore > 0 && (
                   <span className={cn(
