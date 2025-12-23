@@ -164,7 +164,8 @@ const Professors = () => {
                   key={professor.id} 
                   {...professor}
                   rating={reviewStats?.avgRating || professor.rating}
-                  teachingScore={reviewStats?.avgTeaching || professor.teachingScore}
+                  teachingScore={reviewStats?.teachingStyleScore || professor.teachingScore}
+                  teachingStyleLabel={reviewStats?.teachingStyleLabel || ""}
                   reviewCount={reviewStats?.reviewCount || 0}
                   category={category}
                   onDelete={refetch}

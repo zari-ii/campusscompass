@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { StarRating } from "@/components/StarRating";
@@ -16,6 +16,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useReviews } from "@/hooks/useReviews";
 import { useAuth } from "@/contexts/AuthContext";
 import { ReviewCard } from "@/components/ReviewCard";
+import { calculateTeachingStyle } from "@/hooks/useTeachingStyle";
 
 interface CourseGrade {
   course: string;
@@ -96,13 +97,23 @@ const ProfessorDetail = () => {
     ? reviews.reduce((sum, r) => sum + r.overall_rating, 0) / reviews.length 
     : 0;
 
+  // Calculate teaching style from reviews
+  const teachingStyle = useMemo(() => {
+    const reviewData = reviews.map(r => ({
+      overall_rating: r.overall_rating,
+      tags: r.tags
+    }));
+    return calculateTeachingStyle(reviewData);
+  }, [reviews]);
+
   const professor = {
     id: id || "1",
     name: currentProfessor.name,
     department: currentProfessor.department,
     university: currentProfessor.university,
     rating: calculatedRating,
-    totalReviews: reviews.length
+    totalReviews: reviews.length,
+    teachingStyle
   };
 
   const getTeachingLabel = () => {
@@ -313,6 +324,23 @@ const ProfessorDetail = () => {
                   <div className="text-3xl font-bold mb-1">{professor.totalReviews}</div>
                   <div className="text-sm text-muted-foreground">{t.reviews}</div>
                 </div>
+                {professor.teachingStyle.score > 0 && (
+                  <div className="text-center">
+                    <div className="flex items-center gap-2 mb-1">
+                      <StarRating rating={Math.round(professor.teachingStyle.score)} readonly size="md" />
+                    </div>
+                    <div className={cn(
+                      "text-sm font-medium px-3 py-1 rounded-full inline-block",
+                      professor.teachingStyle.score >= 4 ? "bg-rating-great/20 text-rating-great" :
+                      professor.teachingStyle.score >= 3 ? "bg-rating-good/20 text-rating-good" :
+                      professor.teachingStyle.score >= 2 ? "bg-rating-average/20 text-rating-average" :
+                      "bg-rating-poor/20 text-rating-poor"
+                    )}>
+                      {professor.teachingStyle.label}
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-1">{getTeachingLabel()}</div>
+                  </div>
+                )}
               </div>
             </div>
           </Card>

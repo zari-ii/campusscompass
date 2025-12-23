@@ -29,6 +29,7 @@ interface ProfessorCardProps {
   university: string;
   rating: number;
   teachingScore: number;
+  teachingStyleLabel?: string;
   courses: string[];
   tags: string[];
   category?: "professor" | "psychologist" | "tutor" | "course";
@@ -43,6 +44,7 @@ export const ProfessorCard = ({
   university, 
   rating, 
   teachingScore,
+  teachingStyleLabel,
   courses,
   tags,
   category = "professor",
@@ -194,7 +196,20 @@ export const ProfessorCard = ({
           <div className="space-y-2">
             <div className="flex items-center justify-between text-sm">
               <span className="text-muted-foreground">{getTeachingLabel()}</span>
-              <StarRating rating={Math.round(teachingScore)} readonly size="sm" />
+              <div className="flex items-center gap-2">
+                {teachingStyleLabel && teachingScore > 0 && (
+                  <span className={cn(
+                    "text-xs font-medium px-2 py-0.5 rounded-full",
+                    teachingScore >= 4 ? "bg-rating-great/20 text-rating-great" :
+                    teachingScore >= 3 ? "bg-rating-good/20 text-rating-good" :
+                    teachingScore >= 2 ? "bg-rating-average/20 text-rating-average" :
+                    "bg-rating-poor/20 text-rating-poor"
+                  )}>
+                    {teachingStyleLabel}
+                  </span>
+                )}
+                <StarRating rating={Math.round(teachingScore)} readonly size="sm" />
+              </div>
             </div>
           </div>
 
