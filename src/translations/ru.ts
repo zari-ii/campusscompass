@@ -262,6 +262,18 @@ export const ru = {
   emailVerificationRequired: "Пожалуйста, проверьте вашу почту для подтверждения аккаунта перед входом.",
   emailVerificationSent: "Письмо с подтверждением отправлено! Проверьте входящие.",
   
+  // OTP Verification
+  verificationCodeSent: "Код подтверждения отправлен",
+  checkYourEmail: "Пожалуйста, проверьте вашу почту",
+  enterVerificationCode: "Пожалуйста, введите 6-значный код",
+  verifyYourEmail: "Подтвердите Ваш Email",
+  verificationCodeSentTo: "Мы отправили код подтверждения на",
+  verifying: "Проверка...",
+  verifyCode: "Подтвердить Код",
+  didntReceiveCode: "Не получили код?",
+  resendIn: "Отправить повторно через",
+  resendCode: "Отправить Код Повторно",
+  
   // Notifications
   notifications: "Уведомления",
   markAllRead: "Отметить все прочитанными",
