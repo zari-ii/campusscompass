@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { StarRating } from "@/components/StarRating";
@@ -17,10 +17,18 @@ import { useReviews } from "@/hooks/useReviews";
 import { useAuth } from "@/contexts/AuthContext";
 import { ReviewCard } from "@/components/ReviewCard";
 import { calculateTeachingStyle } from "@/hooks/useTeachingStyle";
+import { supabase } from "@/integrations/supabase/client";
 
 interface CourseGrade {
   course: string;
   grade: string;
+}
+
+interface ProfessionalData {
+  name: string;
+  department: string | null;
+  university: string;
+  category: string;
 }
 
 const ProfessorDetail = () => {
@@ -29,10 +37,8 @@ const ProfessorDetail = () => {
   const { toast } = useToast();
   const { t } = useLanguage();
   
-  // Detect category from ID prefix
-  const category = id?.startsWith('p') ? 'psychologist' : 
-                   id?.startsWith('t') ? 'tutor' : 
-                   id?.startsWith('c') ? 'course' : 'professor';
+  const [professionalData, setProfessionalData] = useState<ProfessionalData | null>(null);
+  const [professionalLoading, setProfessionalLoading] = useState(true);
   
   const [overallRating, setOverallRating] = useState(0);
   const [feedback, setFeedback] = useState("");
@@ -46,51 +52,90 @@ const ProfessorDetail = () => {
   const { user } = useAuth();
   const { reviews, loading: reviewsLoading, submitReview, updateReview, deleteReview } = useReviews(id || "");
 
-  // Professor data by ID
-  const professorData: Record<string, { name: string; department: string; university: string }> = {
-    // SPIA
-    "1": { name: "Orkhan Nadirov", department: "SPIA", university: "ADA University" },
-    "2": { name: "Ferit Murat Ozkaleli", department: "SPIA", university: "ADA University" },
-    "3": { name: "Kavus Abushov", department: "SPIA", university: "ADA University" },
-    "4": { name: "Sarvar Gurbanov", department: "SPIA", university: "ADA University" },
-    "5": { name: "Ali Saqer", department: "SPIA", university: "ADA University" },
-    // BBA
-    "6": { name: "Elkin Nurmammadov", department: "BBA", university: "ADA University" },
-    "7": { name: "Azra Brankovic", department: "BBA", university: "ADA University" },
-    "8": { name: "Hulisi Ogut", department: "BBA", university: "ADA University" },
-    "9": { name: "Narmina Rustamova", department: "BBA", university: "ADA University" },
-    "10": { name: "Farid Gadirli", department: "BBA", university: "ADA University" },
-    // SITE
-    "11": { name: "Samir Rustamov", department: "SITE", university: "ADA University" },
-    "12": { name: "Araz Yusubov", department: "SITE", university: "ADA University" },
-    "13": { name: "Fuad Hajiyev", department: "SITE", university: "ADA University" },
-    "14": { name: "Burcu Ramazanli", department: "SITE", university: "ADA University" },
-    "15": { name: "Azar Aliyev", department: "SITE", university: "ADA University" },
-    // EDUCATION
-    "16": { name: "Vafa Kazdal", department: "Education", university: "ADA University" },
-    "17": { name: "Ulker Ibrahimova", department: "Education", university: "ADA University" },
-    "18": { name: "Samira Hajiyeva", department: "Education", university: "ADA University" },
-    // LLB
-    "19": { name: "Azad Talibov", department: "LLB", university: "ADA University" },
-    "20": { name: "Kamala Nazarova", department: "LLB", university: "ADA University" },
-    "21": { name: "Emin Karimov", department: "LLB", university: "ADA University" },
-    "22": { name: "Juan Rodrigo Labardini Flores", department: "LLB", university: "ADA University" },
-    "23": { name: "Aynur Akhundli", department: "LLB", university: "ADA University" },
-    // SAFS
-    "24": { name: "Saida Aliyeva", department: "SAFS", university: "ADA University" },
-    "25": { name: "Matilde Tura", department: "SAFS", university: "ADA University" },
-    "26": { name: "Asaf Omarov", department: "SAFS", university: "ADA University" },
-    "27": { name: "Giacomo Zanello", department: "SAFS", university: "ADA University" },
-    "28": { name: "Marcello Russ", department: "SAFS", university: "ADA University" },
-    // SDA
-    "29": { name: "Marco Bovati", department: "SDA", university: "ADA University" },
-    "30": { name: "Emir Huseynov", department: "SDA", university: "ADA University" },
-    "31": { name: "Stefania Sini", department: "SDA", university: "ADA University" },
-    "32": { name: "Deniz Ozge Aytac", department: "SDA", university: "ADA University" },
-    "33": { name: "Carl Haddrell", department: "SDA", university: "ADA University" },
+  // Fetch professional data from database
+  useEffect(() => {
+    const fetchProfessional = async () => {
+      if (!id) return;
+      
+      setProfessionalLoading(true);
+      
+      // First try to fetch from database
+      const { data, error } = await supabase
+        .from('professionals')
+        .select('name, department, university, category')
+        .eq('id', id)
+        .maybeSingle();
+      
+      if (data) {
+        setProfessionalData(data);
+      } else {
+        // Fallback to static data for legacy IDs
+        const staticData = getStaticProfessorData(id);
+        setProfessionalData(staticData);
+      }
+      
+      setProfessionalLoading(false);
+    };
+    
+    fetchProfessional();
+  }, [id]);
+
+  // Static professor data for legacy numeric IDs
+  const getStaticProfessorData = (professorId: string): ProfessionalData => {
+    const staticProfessorData: Record<string, { name: string; department: string; university: string }> = {
+      // SPIA
+      "1": { name: "Orkhan Nadirov", department: "SPIA", university: "ADA University" },
+      "2": { name: "Ferit Murat Ozkaleli", department: "SPIA", university: "ADA University" },
+      "3": { name: "Kavus Abushov", department: "SPIA", university: "ADA University" },
+      "4": { name: "Sarvar Gurbanov", department: "SPIA", university: "ADA University" },
+      "5": { name: "Ali Saqer", department: "SPIA", university: "ADA University" },
+      // BBA
+      "6": { name: "Elkin Nurmammadov", department: "BBA", university: "ADA University" },
+      "7": { name: "Azra Brankovic", department: "BBA", university: "ADA University" },
+      "8": { name: "Hulisi Ogut", department: "BBA", university: "ADA University" },
+      "9": { name: "Narmina Rustamova", department: "BBA", university: "ADA University" },
+      "10": { name: "Farid Gadirli", department: "BBA", university: "ADA University" },
+      // SITE
+      "11": { name: "Samir Rustamov", department: "SITE", university: "ADA University" },
+      "12": { name: "Araz Yusubov", department: "SITE", university: "ADA University" },
+      "13": { name: "Fuad Hajiyev", department: "SITE", university: "ADA University" },
+      "14": { name: "Burcu Ramazanli", department: "SITE", university: "ADA University" },
+      "15": { name: "Azar Aliyev", department: "SITE", university: "ADA University" },
+      // EDUCATION
+      "16": { name: "Vafa Kazdal", department: "Education", university: "ADA University" },
+      "17": { name: "Ulker Ibrahimova", department: "Education", university: "ADA University" },
+      "18": { name: "Samira Hajiyeva", department: "Education", university: "ADA University" },
+      // LLB
+      "19": { name: "Azad Talibov", department: "LLB", university: "ADA University" },
+      "20": { name: "Kamala Nazarova", department: "LLB", university: "ADA University" },
+      "21": { name: "Emin Karimov", department: "LLB", university: "ADA University" },
+      "22": { name: "Juan Rodrigo Labardini Flores", department: "LLB", university: "ADA University" },
+      "23": { name: "Aynur Akhundli", department: "LLB", university: "ADA University" },
+      // SAFS
+      "24": { name: "Saida Aliyeva", department: "SAFS", university: "ADA University" },
+      "25": { name: "Matilde Tura", department: "SAFS", university: "ADA University" },
+      "26": { name: "Asaf Omarov", department: "SAFS", university: "ADA University" },
+      "27": { name: "Giacomo Zanello", department: "SAFS", university: "ADA University" },
+      "28": { name: "Marcello Russ", department: "SAFS", university: "ADA University" },
+      // SDA
+      "29": { name: "Marco Bovati", department: "SDA", university: "ADA University" },
+      "30": { name: "Emir Huseynov", department: "SDA", university: "ADA University" },
+      "31": { name: "Stefania Sini", department: "SDA", university: "ADA University" },
+      "32": { name: "Deniz Ozge Aytac", department: "SDA", university: "ADA University" },
+      "33": { name: "Carl Haddrell", department: "SDA", university: "ADA University" },
+    };
+    
+    const data = staticProfessorData[professorId];
+    return data 
+      ? { ...data, category: 'professor' }
+      : { name: "Unknown", department: null, university: "Unknown", category: 'professor' };
   };
 
-  const currentProfessor = professorData[id || "1"] || { name: "Unknown", department: "Unknown", university: "ADA University" };
+  // Determine category from professional data or ID prefix
+  const category = professionalData?.category || 
+                   (id?.startsWith('p') ? 'psychologist' : 
+                    id?.startsWith('t') ? 'tutor' : 
+                    id?.startsWith('c') ? 'course' : 'professor');
 
   // Calculate dynamic ratings from reviews
   const calculatedRating = reviews.length > 0 
@@ -108,9 +153,9 @@ const ProfessorDetail = () => {
 
   const professor = {
     id: id || "1",
-    name: currentProfessor.name,
-    department: currentProfessor.department,
-    university: currentProfessor.university,
+    name: professionalData?.name || "Loading...",
+    department: professionalData?.department || "",
+    university: professionalData?.university || "",
     rating: calculatedRating,
     totalReviews: reviews.length,
     teachingStyle
