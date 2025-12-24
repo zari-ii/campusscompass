@@ -261,18 +261,6 @@ export const az = {
   emailVerificationRequired: "Zəhmət olmasa giriş etməzdən əvvəl hesabınızı təsdiqləmək üçün e-poçtunuzu yoxlayın.",
   emailVerificationSent: "Təsdiq e-poçtu göndərildi! Zəhmət olmasa gələnlər qutunuzu yoxlayın.",
   
-  // OTP Verification
-  verificationCodeSent: "Təsdiq kodu göndərildi",
-  checkYourEmail: "Zəhmət olmasa e-poçt qutunuzu yoxlayın",
-  enterVerificationCode: "Zəhmət olmasa 6 rəqəmli kodu daxil edin",
-  verifyYourEmail: "E-poçtunuzu Təsdiqləyin",
-  verificationCodeSentTo: "Təsdiq kodunu göndərdik",
-  verifying: "Təsdiqlənir...",
-  verifyCode: "Kodu Təsdiqlə",
-  didntReceiveCode: "Kod almadınız?",
-  resendIn: "Yenidən göndər",
-  resendCode: "Kodu Yenidən Göndər",
-  
   // Notifications
   notifications: "Bildirişlər",
   markAllRead: "Hamısını oxunmuş kimi işarələ",

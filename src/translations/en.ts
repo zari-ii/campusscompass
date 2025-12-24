@@ -261,18 +261,6 @@ export const en = {
   emailVerificationRequired: "Please check your email to verify your account before signing in.",
   emailVerificationSent: "Verification email sent! Please check your inbox.",
   
-  // OTP Verification
-  verificationCodeSent: "Verification code sent",
-  checkYourEmail: "Please check your email inbox",
-  enterVerificationCode: "Please enter the 6-digit code",
-  verifyYourEmail: "Verify Your Email",
-  verificationCodeSentTo: "We sent a verification code to",
-  verifying: "Verifying...",
-  verifyCode: "Verify Code",
-  didntReceiveCode: "Didn't receive the code?",
-  resendIn: "Resend in",
-  resendCode: "Resend Code",
-  
   // Notifications
   notifications: "Notifications",
   markAllRead: "Mark all read",

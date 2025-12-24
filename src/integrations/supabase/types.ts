@@ -44,36 +44,6 @@ export type Database = {
         }
         Relationships: []
       }
-      otp_verifications: {
-        Row: {
-          attempts: number
-          code_hash: string
-          created_at: string
-          email_hash: string
-          expires_at: string
-          id: string
-          verified: boolean
-        }
-        Insert: {
-          attempts?: number
-          code_hash: string
-          created_at?: string
-          email_hash: string
-          expires_at: string
-          id?: string
-          verified?: boolean
-        }
-        Update: {
-          attempts?: number
-          code_hash?: string
-          created_at?: string
-          email_hash?: string
-          expires_at?: string
-          id?: string
-          verified?: boolean
-        }
-        Relationships: []
-      }
       professionals: {
         Row: {
           category: string
