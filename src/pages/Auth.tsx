@@ -14,7 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 
 const Auth = () => {
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -237,10 +237,22 @@ const Auth = () => {
               <Button type="submit" className="w-full" disabled={loading}>{loading ? t.loading : isSignUp ? t.signUp : t.signIn}</Button>
             </form>
 
-            <div className="mt-6 text-center">
-              <button type="button" onClick={() => { setIsSignUp(!isSignUp); setEmail(""); setPassword(""); setUsername(""); }} className="text-sm text-primary hover:underline">
-                {isSignUp ? t.alreadyHaveAccount : t.dontHaveAccount}
-              </button>
+            <div className="mt-6 text-center text-sm text-muted-foreground">
+              {isSignUp ? (
+                <>
+                  Already have an account?{" "}
+                  <button type="button" onClick={() => { setIsSignUp(false); setEmail(""); setPassword(""); setUsername(""); }} className="text-primary hover:underline font-medium">
+                    {t.signIn}
+                  </button>
+                </>
+              ) : (
+                <>
+                  Don't have an account?{" "}
+                  <button type="button" onClick={() => { setIsSignUp(true); setEmail(""); setPassword(""); setUsername(""); }} className="text-primary hover:underline font-medium">
+                    {t.signUp}
+                  </button>
+                </>
+              )}
             </div>
           </Card>
         </div>
